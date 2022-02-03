@@ -9,7 +9,6 @@
   "author": "Ira Tkach",
   "license": "ISC",
   "dependencies": {
-    "assert": "^2.0.0",
     "axios": "0.25.0",
     "cors": "^2.8.5",
     "express": "^4.17.2",

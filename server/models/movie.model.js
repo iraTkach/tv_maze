@@ -3,15 +3,16 @@ import { Schema, model } from "mongoose";
 // 'Schema' maps to a mongoDB collection and defines the shape of the documents within that collection.
 // 'Schema' is the blueprint of the documents.
 
-const userSchema = new Schema({
+const movieSchema = new Schema({
   //id:  {type: ObjectId, required: true}, // by-default is not required(false).
-  userName: { type: String, required: false },
-  password: { type: String, required: false },
-  //role: { type: String, required: true },
+  name: { type: String, required: true },
+  genres: { type: Array, required: true },
+  image: { type: String, required: false },
+  premiered: { type: Date, required: true },
 });
 
 // 'model' is a class which we construct document in a collection
-export default model("users", userSchema);
+export default model("movies", movieSchema);
 
 // The first argument is the singular name of the collection that will be created for the model:
 // mongoose will create the database collection for the model car.
