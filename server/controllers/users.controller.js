@@ -64,8 +64,19 @@ export const addUserFile = (id, user) => {
       createdAt: new Date().toLocaleString(), 
       timeOut: 120,
     };
-
+    const permObj = {
+      id,
+      permissions:{
+        'viewSub': true,
+        'createSub': false,
+        'deleteSub': false,
+        'viewMovie': true,
+        'createMovie': false,
+        'deleteMovie': false,
+      }
+    }
     handleJson(memberAPI.usersJson, 'name', userObj, resolve);
+    handleJson(memberAPI.permJson, 'id', permObj, resolve);
   });
 };
 
@@ -74,12 +85,27 @@ export const addUserFile = (id, user) => {
  * @async
  * @param {*} newUser
  */
-export const addUser = async (newUser) => {
-  //const numOfUsers = await User.count({})
-  //const user = new User({...newUser, id: numOfUsers+1});
+ export const addUser = async (newUser) => {
 
   const users = await getAllUsers();
+  const exists = users.find(user => user.userName === newUser.userName);
+  
+  if (!exists) {
+    return console.warn("User doesn't exist");
+  }
+  //console.log(newUser.password);
+  return await updateUser(newUser.id, {...newUser, password: newUser.password})
 
+}
+
+/**
+ * @export
+ * @async
+ * @param {*} newUser
+ */
+export const addUserAdmin = async (newUser) => {
+
+  const users = await getAllUsers();
   const exists = users.find(user => user.userName === newUser.userName);
   
   if (exists) {
@@ -90,7 +116,6 @@ export const addUser = async (newUser) => {
     userName: newUser.userName,
     password: newUser.password,
   });
-  //const user = new Users(newUser); //{...newUser, id: numOfUsers+1});
 
   await user.save((err) => {
     if (err) {
@@ -108,7 +133,8 @@ export const addUser = async (newUser) => {
 /**
  * @export
  * @async
- * @param {*} id
+ * @param {String} id
+ * @param {*} userToUpdate
  */
 export const updateUser = (id, userToUpdate) => {
   return new Promise((resolve, reject) => {
@@ -117,6 +143,7 @@ export const updateUser = (id, userToUpdate) => {
         reject(err);
       } else {
         resolve("Updated successfully");
+        console.log("Updated successfully");
       }
     });
   });
@@ -139,10 +166,4 @@ export const deleteUser = (id) => {
   });
 };
 
-// module.exports = {
-//   getAllUsers,
-//   getUserById,
-//   addUser,
-//   updateUser,
-//   deleteUser
-// }
+

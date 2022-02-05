@@ -1,11 +1,13 @@
 import { Router } from "express";
 import { apiWrapper } from "../services/request";
-import { getAllUsers, getUserById, addUser, updateUser, deleteUser } from "../controllers/users.controller";
+import { getAllUsers, getUserById, addUser, addUserAdmin, updateUser, deleteUser } from "../controllers/users.controller";
 
 const router = Router();
 router.get("/", async (req, res) => await apiWrapper(req, res, getAllUsers));
 
 router.get("/:id", async (req, res) => await apiWrapper(req, res, getUserById));
+
+router.post("/admin/", async (req, res) => await apiWrapper(req, res, addUserAdmin, "post"));
 
 router.post("/", async (req, res) => await apiWrapper(req, res, addUser, "post"));
 

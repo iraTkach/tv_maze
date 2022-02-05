@@ -79,10 +79,14 @@ export const getAllMembers = async () => {
  * @param {*} vewMember
  */
 export const addMember = async (newMember) => {
-  //const numOfMembers = await Member.count({})
-  //const member = new Member({...newMember, id: numOfMembers+1});
-  const member = new Members(newMember); //{...newMember, id: numOfMembers+1});
-
+  // const members = await getAllMembers();
+  // const exists = members.find(member => member.name === newUser.name);
+  
+  // if (!exists) {
+  //   return console.warn("User doesn't exist");
+  // }
+  // await updateMember(newMember.id, {...newMember, name: newMember.name})
+  const member = new Members(newMember); 
   await member.save((err) => {
     if (err) {
       console.warn(err);
