@@ -1,23 +1,24 @@
 import React, { useState } from "react";
 import "antd/dist/antd.min.css";
-import { Button, Layout, PageHeader } from "antd";
+import { Layout, PageHeader } from "antd";
 import { Outlet } from "react-router-dom";
 import LayoutMeta from ".";
 import { Provider } from "react-redux";
-import { createStore } from 'redux';
-import commonModel from "./../models/common.model";
+import { store } from "../models/store";
+import { connect } from "react-redux";
+import { mainActions } from "./../models/actions/main.actions";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const MainLayout = (props) => {
-  const [collapsed, setCollapsed] = useState(false);
+  const { metadata = {} } = props;
+
+  const [collapsed, setCollapsed] = useState(true);
 
   const onCollapse = (collapsed) => {
     setCollapsed(collapsed);
   };
 
-  const store = createStore(commonModel);
-console.log(store);
   return (
     <Provider store={store}>
       <Layout style={{ minHeight: "100vh" }}>
@@ -29,16 +30,14 @@ console.log(store);
           <Header className="site-layout-background" style={{ padding: 0 }} />
           <Content style={{ margin: "0 16px" }}>
             <LayoutMeta.Breadcrumbs />
+            {alert?.message && (
+              <div className={`alert ${alert.type}`}>{alert.message}</div>
+            )}
             <PageHeader
               ghost={false}
-              onBack={() => window.history.back()}
-              title="Title"
-              subTitle="This is a subtitle"
-              extra={[
-                <Button key="1" type="primary">
-                  Primary
-                </Button>,
-              ]}
+              onBack={metadata?.back ? () => window.history.back() : null}
+              title={metadata?.title}            
+              extra={metadata?.buttons}
             >
               <Outlet />
             </PageHeader>
@@ -50,4 +49,13 @@ console.log(store);
   );
 };
 
-export default MainLayout;
+function mapState(state) {
+  const { metadata } = state;
+  return { metadata };
+}
+
+const layoutCreators = {
+  updateMeta: mainActions.updateMeta,
+};
+
+export default connect(mapState, layoutCreators)(MainLayout);

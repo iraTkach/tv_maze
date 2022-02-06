@@ -1,20 +1,30 @@
 import React, { useEffect, useState } from "react";
-import { apiUsers } from "./../../services/user.service";
-import { Table } from "antd";
+import { Button, Table } from "antd";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { useDispatch, useSelector } from "react-redux";
+import { userActions } from "./../../models/actions/user.actions";
+import { mainActions } from "./../../models/actions/main.actions";
+import { AddUser } from "./add.user";
 
 const Users = (props) => {
-  const { title, onApiUsers } = props;
-
-  const dispatch = useDispatch();
+  const { title, back, user, users = {}, getAll, updateMeta } = props;
 
   useEffect(() => {
-    onApiUsers();
-  }, [onApiUsers]);
+    const buttons = [
+      <Button key="new" type="primary" onClick={handleAddNewUser}>
+        New
+      </Button>,
+    ];
 
-  const dataSource = []?.map((user, idx) => ({
+    getAll();
+    updateMeta(title, back, buttons);
+  }, [back, getAll, title, updateMeta]);
+
+  const handleAddNewUser = () => {
+    setVisible(true);
+  };
+
+  const dataSource = users?.items?.map((user, idx) => ({
     key: idx,
     _id: user._id,
     name: user.userName,
@@ -31,28 +41,35 @@ const Users = (props) => {
     },
   ];
 
+  const [visible, setVisible] = useState(false);
+
+  const onCreate = (values) => {
+    console.log("Received values of form: ", values);
+    setVisible(false);
+  };
+
   return (
     <div>
       <Table dataSource={dataSource} columns={columns} />;
+      <AddUser
+        visible={visible}
+        onCreate={onCreate}
+        onCancel={() => {
+          setVisible(false);
+        }}
+      />
     </div>
   );
 };
 
-const mapStateToProps = (state) => {
-  console.log(state);
-  return {
-    users: state.users,
-  };
+function mapState(state) {
+  const { user, users } = state;
+  return { user, users };
+}
+
+const userCreators = {
+  getAll: userActions.getAll,
+  updateMeta: mainActions.updateMeta,
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    // dispatching plain actions
-    onApiUsers: () => {
-      debugger
-      dispatch({ type: "getUsers" });
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Users);
+export default connect(mapState, userCreators)(Users);
