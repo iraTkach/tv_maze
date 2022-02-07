@@ -27,6 +27,20 @@ export const getAllUsers = async () => {
   return new Promise((resolve, reject) => {
     Users.find({}, async (err, users) => {
       if (err) return reject(err);
+      const json = await getUsersJson();
+      users = users.map((user) => {
+        const _json = json.find((_user) => _user._id === user._id.toString());
+        if (_json) {
+          return {
+            userName: user.userName,
+            ..._json
+          };
+        }
+        return {
+          _id: user._id.toString(),
+          userName: user.userName
+        };
+      });
       resolve(users);
     });
   });
@@ -49,7 +63,7 @@ export const getUsersJson = async () => {
  * @returns
  */
 export const getUserJson = async (id) => {
-  return new Promise(async(resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const json = await readJsonFile(memberAPI.usersJson, resolve);
     resolve(json.find((user) => user.id === id));
   });
@@ -75,21 +89,21 @@ export const getUserById = (id) => {
 
 /**
  * @export
- * @param {*} id
+ * @param {*} _id
  * @param {*} user
  * @returns
  */
-export const addUserFile = (id, user) => {
+export const addUserFile = (_id, user) => {
   return new Promise((resolve) => {
     const userObj = {
-      id,
+      _id,
       name: user.name,
       createdAt: new Date().toLocaleString(),
       timeOut: 120,
     };
 
     const permObj = {
-      id,
+      _id,
       permissions: {
         viewSub: true,
         createSub: false,
@@ -100,8 +114,8 @@ export const addUserFile = (id, user) => {
       },
     };
 
-    handleJson(memberAPI.usersJson, "name", userObj, resolve);
-    handleJson(memberAPI.permJson, "id", permObj, resolve);
+    handleJson(memberAPI.usersJson, "_id", userObj, resolve);
+    handleJson(memberAPI.permJson, "_id", permObj, resolve);
   });
 };
 

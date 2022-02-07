@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Button, Spin, Table } from "antd";
+import { Button, Spin, Table, Popconfirm } from "antd";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { userActions } from "./../../models/actions/user.actions";
 import { mainActions } from "./../../models/actions/main.actions";
 import { AddUser } from "./add.user";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+
+import styles from "./user.module.css";
 
 const getButtons = (loading, onClick) => {
   return [
@@ -15,7 +18,15 @@ const getButtons = (loading, onClick) => {
 };
 
 const Users = (props) => {
-  const { title, back, user, users = {}, getAll, updateMeta, addAdminUser } = props;
+  const {
+    title,
+    back,
+    user,
+    users = {},
+    getAll,
+    updateMeta,
+    addAdminUser,
+  } = props;
 
   useEffect(() => {
     getAll();
@@ -32,7 +43,9 @@ const Users = (props) => {
   const dataSource = users?.items?.map((user, idx) => ({
     key: idx,
     _id: user._id,
-    name: user.userName,
+    userName: user.userName,
+    name: user.name,
+    createdAt: user.createdAt,
   }));
 
   const columns = [
@@ -40,8 +53,45 @@ const Users = (props) => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      render(name, data) {
-        return <Link to={`/users/${data._id}`}>{name}</Link>;
+    },
+    {
+      title: "Login",
+      dataIndex: "userName",
+      key: "userName",
+      render(userName, data) {
+        return <Link to={`/users/${data._id}`}>{userName}</Link>;
+      },
+    },
+    {
+      title: "Created at",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render(createdAt) {
+        if (createdAt) {
+          const _at = new Date(createdAt);
+          return `${_at.toLocaleDateString()}, ${_at.toLocaleTimeString()}`;
+        }
+        return null;
+      },
+    },
+    {
+      title: "Actions",
+      render(_, data) {
+        return (
+          <div className={styles.actions}>
+            <EditOutlined onClick={() => alert("Edit")} />
+            <Popconfirm
+              title={`Are you sure to delete this user: ${data.userName}?`}
+              onConfirm={() => {
+                alert("Delete");
+              }}
+              okText="Yes"
+              cancelText="No"
+            >
+              <DeleteOutlined />
+            </Popconfirm>
+          </div>
+        );
       },
     },
   ];
