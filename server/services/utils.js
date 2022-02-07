@@ -1,5 +1,5 @@
 import { stub } from "./request";
-import { readFile, writeFile } from "fs";
+import { readFileSync, readFile, writeFile } from "fs";
 
 /**
  * @constant
@@ -83,4 +83,17 @@ export const handleJson = (path, validateBy, data = {}, resolve = stub) => {
       false
     );
   });
+};
+
+/**
+ * @export
+ * @param {string} path
+ */
+export const readJsonFile = async (path) => {
+  const content = readFileSync(path);
+  try {
+    return JSON.parse(content);
+  } catch (parseJsonError) {
+    console.error(parseJsonError);
+  }
 };

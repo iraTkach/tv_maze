@@ -9,10 +9,30 @@ export function users(state = {}, action) {
     case userConstants.GETALL_SUCCESS:
       return {
         items: action.users,
+        loading: false
       };
     case userConstants.GETALL_FAILURE:
       return {
         error: action.error,
+        loading: false
+      };
+    case userConstants.NEW_USER_REQUEST:
+      return {
+        loading: true,
+      };
+    case userConstants.NEW_ADMIN_USER_REQUEST:
+      return {
+        loading: true
+      };
+    case userConstants.NEW_USER_SUCCESS:     
+      return {
+        items: action.users,
+        loading: false
+      };
+    case userConstants.NEW_USER_FAILURE:
+      return {
+        error: action.error,
+        loading: false
       };
     case userConstants.DELETE_REQUEST:
       // add 'deleting:true' property to user being deleted

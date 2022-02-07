@@ -9,6 +9,7 @@ export const userActions = {
   register,
   getAll,
   delete: _delete,
+  addAdminUser
 };
 
 function login(username, password) {
@@ -92,6 +93,26 @@ function getAll() {
   }
 }
 
+function addAdminUser(user) {
+  return (dispatch) => {
+    dispatch(request(user));
+
+    userService.addAdminUser(user).then(
+      (users) => dispatch(success(users)),
+      (error) => dispatch(failure(user, error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: userConstants.NEW_ADMIN_USER_REQUEST };
+  }
+  function success(users) {
+    return { type: userConstants.NEW_USER_SUCCESS, users };
+  }
+  function failure(error) {
+    return { type: userConstants.NEW_USER_FAILURE, error };
+  }
+}
 // prefixed function name with underscore because delete is a reserved word in javascript
 function _delete(id) {
   return (dispatch) => {

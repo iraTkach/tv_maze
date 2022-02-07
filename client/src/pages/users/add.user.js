@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal, Form, Input } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined, ContactsOutlined } from "@ant-design/icons";
 
 export const AddUser = (props) => {
   const [form] = Form.useForm();
@@ -10,7 +10,7 @@ export const AddUser = (props) => {
     <Modal
       visible={visible}
       title="Add new User"
-      okText="Create"
+      okText="Add"
       cancelText="Cancel"
       onCancel={onCancel}
       onOk={() => {
@@ -34,7 +34,21 @@ export const AddUser = (props) => {
         }}
       >
         <Form.Item
-          name="username"
+          name="name"
+          rules={[
+            {
+              required: true,
+              message: "Please input your Full Name",
+            },
+          ]}
+        >
+          <Input
+            prefix={<ContactsOutlined className="site-form-item-icon" />}
+            placeholder="Full Name"
+          />
+        </Form.Item>
+        <Form.Item
+          name="userName"
           rules={[
             {
               required: true,

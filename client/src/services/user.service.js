@@ -1,4 +1,4 @@
-import { requestGet, api } from "./api";
+import { api } from "./api";
 
 export function authHeader() {
     // return authorization header with jwt token
@@ -18,7 +18,8 @@ export const userService = {
     getAll,
     getById,
     update,
-    delete: _delete
+    delete: _delete,
+    addAdminUser
 };
 
 async function login(username, password) {
@@ -48,6 +49,16 @@ async function getAll() {
 
     const response = await fetch(api.users, requestOptions);
     return handleResponse(response);
+}
+
+async function addAdminUser(user) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(user)
+    };
+
+    return fetch(`${api.users}/admin`, requestOptions).then(handleResponse);
 }
 
 function getById(id) {

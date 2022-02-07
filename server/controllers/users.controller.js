@@ -2,7 +2,7 @@ import Users from "../models/user.model";
 import { getAll } from "../services/axios";
 import { userAPI } from "../services/config/user.config";
 import { memberAPI } from "./../services/config/user.config";
-import { handleJson } from './../services/utils';
+import { handleJson, readJsonFile } from "./../services/utils";
 
 const assert = require("assert");
 
@@ -29,6 +29,29 @@ export const getAllUsers = async () => {
       if (err) return reject(err);
       resolve(users);
     });
+  });
+};
+
+/**
+ * @export
+ * @returns
+ */
+export const getUsersJson = async () => {
+  return new Promise((resolve, reject) => {
+    const json = readJsonFile(memberAPI.usersJson, resolve);
+    resolve(json);
+  });
+};
+
+/**
+ * @export
+ * @params {string} id
+ * @returns
+ */
+export const getUserJson = async (id) => {
+  return new Promise(async(resolve, reject) => {
+    const json = await readJsonFile(memberAPI.usersJson, resolve);
+    resolve(json.find((user) => user.id === id));
   });
 };
 
@@ -61,22 +84,24 @@ export const addUserFile = (id, user) => {
     const userObj = {
       id,
       name: user.name,
-      createdAt: new Date().toLocaleString(), 
+      createdAt: new Date().toLocaleString(),
       timeOut: 120,
     };
+
     const permObj = {
       id,
-      permissions:{
-        'viewSub': true,
-        'createSub': false,
-        'deleteSub': false,
-        'viewMovie': true,
-        'createMovie': false,
-        'deleteMovie': false,
-      }
-    }
-    handleJson(memberAPI.usersJson, 'name', userObj, resolve);
-    handleJson(memberAPI.permJson, 'id', permObj, resolve);
+      permissions: {
+        viewSub: true,
+        createSub: false,
+        deleteSub: false,
+        viewMovie: true,
+        createMovie: false,
+        deleteMovie: false,
+      },
+    };
+
+    handleJson(memberAPI.usersJson, "name", userObj, resolve);
+    handleJson(memberAPI.permJson, "id", permObj, resolve);
   });
 };
 
@@ -85,18 +110,19 @@ export const addUserFile = (id, user) => {
  * @async
  * @param {*} newUser
  */
- export const addUser = async (newUser) => {
-
+export const addUser = async (newUser) => {
   const users = await getAllUsers();
-  const exists = users.find(user => user.userName === newUser.userName);
-  
+  const exists = users.find((user) => user.userName === newUser.userName);
+
   if (!exists) {
     return console.warn("User doesn't exist");
   }
   //console.log(newUser.password);
-  return await updateUser(newUser.id, {...newUser, password: newUser.password})
-
-}
+  return await updateUser(newUser.id, {
+    ...newUser,
+    password: newUser.password,
+  });
+};
 
 /**
  * @export
@@ -104,12 +130,11 @@ export const addUserFile = (id, user) => {
  * @param {*} newUser
  */
 export const addUserAdmin = async (newUser) => {
-
   const users = await getAllUsers();
-  const exists = users.find(user => user.userName === newUser.userName);
-  
+  const exists = users.find((user) => user.userName === newUser.userName);
+
   if (exists) {
-    return console.warn('User name already exists');
+    return console.warn("User name already exists");
   }
 
   const user = new Users({
@@ -117,17 +142,21 @@ export const addUserAdmin = async (newUser) => {
     password: newUser.password,
   });
 
-  await user.save((err) => {
+  await user.save(async (err) => {
     if (err) {
       return console.error(err);
     }
 
     console.info("Added successfully");
     //console.info(user._id);
-    addUserFile(user._id, newUser)
+    await addUserFile(user._id, newUser)
       .then((data) => console.log(data))
       .catch((err) => console.error(err));
   });
+
+  users.push(user);
+
+  return users;
 };
 
 /**
@@ -165,5 +194,3 @@ export const deleteUser = (id) => {
     });
   });
 };
-
-
