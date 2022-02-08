@@ -1,16 +1,53 @@
-import React from "react";
-import { Modal, Form, Input } from "antd";
-import { UserOutlined, LockOutlined, ContactsOutlined } from "@ant-design/icons";
+import React, { useEffect } from "react";
+import { Modal, Form, Input, Divider, Switch, Row, Col } from "antd";
+import {
+  UserOutlined,
+  LockOutlined,
+  ContactsOutlined,
+} from "@ant-design/icons";
+
+const permissionProps = {
+  sm: 12,
+  md: 8,
+  lg: 6,
+  xl: 4,
+  xxl: 2,
+};
 
 export const AddUser = (props) => {
   const [form] = Form.useForm();
-  const { visible, onCreate, onCancel } = props;
+  const {
+    fields = [],
+    visible,
+    onSave,
+    onCancel,
+    title,
+    isEdit = false,
+  } = props;
+
+  useEffect(() => {
+    if (!fields.length) {
+      form?.resetFields();
+    }
+  }, [form, fields]);
+
+  const prmOpts = [
+    { label: "View Subscriptions", value: "viewSub" },
+    { label: "Create Subscriptions", value: "createSub" },
+    { label: "Delete Subscriptions", value: "deleteSub" },
+    { label: "Update Subscriptions", value: "updateSub" },
+    { label: "View Movie", value: "viewMovie" },
+    { label: "Create Movie", value: "createMovie" },
+    { label: "Delete Movie", value: "deleteMovie" },
+    { label: "Update Movie", value: "updateMovie" },
+  ];
 
   return (
     <Modal
+      forceRender={true}
       visible={visible}
-      title="Add new User"
-      okText="Add"
+      title={title}
+      okText={isEdit ? "Update" : "Add"}
       cancelText="Cancel"
       onCancel={onCancel}
       onOk={() => {
@@ -18,7 +55,7 @@ export const AddUser = (props) => {
           .validateFields()
           .then((values) => {
             form.resetFields();
-            onCreate(values);
+            onSave(values);
           })
           .catch((info) => {
             console.log("Validate Failed:", info);
@@ -28,15 +65,19 @@ export const AddUser = (props) => {
       <Form
         form={form}
         layout="vertical"
-        name="Add new User"
+        fields={fields}
+        scrollToFirstError={true}
         initialValues={{
-          remember: true,
+          viewSub: true,
         }}
       >
         <Form.Item
           name="name"
+          label="Full Name"
+          placeholder="Enter Full Name"
           rules={[
             {
+              autoFocus: true,
               required: true,
               message: "Please input your Full Name",
             },
@@ -44,11 +85,12 @@ export const AddUser = (props) => {
         >
           <Input
             prefix={<ContactsOutlined className="site-form-item-icon" />}
-            placeholder="Full Name"
           />
         </Form.Item>
         <Form.Item
           name="userName"
+          label="User Name"
+          placeholder="Enter User Name"
           rules={[
             {
               required: true,
@@ -57,26 +99,40 @@ export const AddUser = (props) => {
           ]}
         >
           <Input
+            disabled={isEdit}
+            autoComplete="username"
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="Username"
           />
         </Form.Item>
-        <Form.Item
-          name="password"
-          placeholder="Password"
-          rules={[
-            {
-              required: true,
-              message: "Please input your Password",
-            },
-          ]}
-        >
-          <Input
-            prefix={<LockOutlined className="site-form-item-icon" />}
-            type="password"
-            placeholder="Password"
-          />
-        </Form.Item>
+        {!isEdit && (
+          <Form.Item
+            name="password"
+            label="Password"
+            placeholder="Enter Password"
+            rules={[
+              {
+                required: true,
+                message: "Please input your Password",
+              },
+            ]}
+          >
+            <Input
+              autoComplete="current-password"
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              type="password"
+            />
+          </Form.Item>
+        )}
+        <Divider orientation="left">Permissions</Divider>
+        <Row>
+          {prmOpts.map((p, idx) => (
+            <Col {...permissionProps} key={idx}>
+              <Form.Item name={p.value} label={p.label} valuePropName="checked">
+                <Switch />
+              </Form.Item>
+            </Col>
+          ))}
+        </Row>
       </Form>
     </Modal>
   );

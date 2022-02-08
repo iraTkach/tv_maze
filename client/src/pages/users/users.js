@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Spin, Table, Popconfirm } from "antd";
+import { Button, Spin, Table, Popconfirm, message } from "antd";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { userActions } from "./../../models/actions/user.actions";
@@ -8,6 +8,7 @@ import { AddUser } from "./add.user";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 import styles from "./user.module.css";
+import { toForm } from "./../../utils/form";
 
 const getButtons = (loading, onClick) => {
   return [
@@ -26,6 +27,7 @@ const Users = (props) => {
     getAll,
     updateMeta,
     addAdminUser,
+    userPermissions,
   } = props;
 
   useEffect(() => {
@@ -33,11 +35,43 @@ const Users = (props) => {
   }, [getAll]);
 
   useEffect(() => {
-    updateMeta(title, back, getButtons(users?.loading, handleAddNewUser));
-  }, [users, back, title, updateMeta]);
+    updateMeta(
+      title,
+      back,
+      getButtons(users?.loading, () => handleAddNewUser("Add User"))
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [users, back, title]);
 
-  const handleAddNewUser = () => {
+  useEffect(() => {
+    if (users.permissions) {
+      const user = users.items.find(
+        (user) => user._id === users.permissions._id
+      );
+      if (user) {
+        Object.assign(user, users.permissions.abilities);
+        // setFields(toForm(user, "user"));
+        setFields(toForm(user));
+      } else {
+        message.error("Unable to find selected user");
+        setFields([]);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [users?.permissions]);
+
+  const handleAddNewUser = (_title) => {
     setVisible(true);
+    setModalTitle(_title);
+    setIsEdit(false);
+    setFields([]);
+  };
+
+  const handleEditUser = (_title, user) => {
+    setVisible(true);
+    setModalTitle(_title);
+    setIsEdit(true);
+    userPermissions(user, users);
   };
 
   const dataSource = users?.items?.map((user, idx) => ({
@@ -79,7 +113,12 @@ const Users = (props) => {
       render(_, data) {
         return (
           <div className={styles.actions}>
-            <EditOutlined onClick={() => alert("Edit")} />
+            <EditOutlined
+              onClick={() => {
+                //alert("Edit")
+                handleEditUser("Edit User", data);
+              }}
+            />
             <Popconfirm
               title={`Are you sure to delete this user: ${data.userName}?`}
               onConfirm={() => {
@@ -96,24 +135,38 @@ const Users = (props) => {
     },
   ];
 
-  const [visible, setVisible] = useState(false);
-
   const onCreate = (values) => {
     console.log("Received values of form: ", values);
     setVisible(false);
     addAdminUser(values);
   };
 
+  const onUpdate = (values) => {
+    console.log("Received values of form: ", values);
+    setVisible(false);
+    // updateAdminUser(values);
+  };
+
+  const [visible, setVisible] = useState(false);
+  const [modalTitle, setModalTitle] = useState("Add User");
+  const [isEdit, setIsEdit] = useState(false);
+  const [fields, setFields] = useState([]);
+
   return (
     <Spin spinning={users?.loading}>
       <Table dataSource={dataSource} columns={columns} />
-      <AddUser
-        visible={visible}
-        onCreate={onCreate}
-        onCancel={() => {
-          setVisible(false);
-        }}
-      />
+      {visible && (
+        <AddUser
+          fields={fields}
+          title={modalTitle}
+          visible={visible}
+          isEdit={isEdit}
+          onSave={(values) => (isEdit ? onUpdate(values) : onCreate(values))}
+          onCancel={() => {
+            setVisible(false);
+          }}
+        />
+      )}
     </Spin>
   );
 };
@@ -127,6 +180,7 @@ const userCreators = {
   getAll: userActions.getAll,
   updateMeta: mainActions.updateMeta,
   addAdminUser: userActions.addAdminUser,
+  userPermissions: userActions.userPermissions,
 };
 
 export default connect(mapState, userCreators)(Users);

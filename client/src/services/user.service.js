@@ -19,7 +19,8 @@ export const userService = {
     getById,
     update,
     delete: _delete,
-    addAdminUser
+    addAdminUser,
+    userPermissions
 };
 
 async function login(username, password) {
@@ -61,7 +62,21 @@ async function addAdminUser(user) {
     return fetch(`${api.users}/admin`, requestOptions).then(handleResponse);
 }
 
-function getById(id) {
+/**
+ * @async
+ * @param {*} _id 
+ * @returns 
+ */
+async function userPermissions(_id) {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+    };
+
+    return fetch(`${api.users}/permissions/${_id}`, requestOptions).then(handleResponse);
+}
+
+async function getById(id) {
     const requestOptions = {
         method: 'GET',
         headers: authHeader()
@@ -70,34 +85,37 @@ function getById(id) {
     return fetch(`${api.apiUrl}/users/${id}`, requestOptions).then(handleResponse);
 }
 
-function register(user) {
+async function register(user) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user)
     };
 
-    return fetch(`${api.apiUrl}/users/register`, requestOptions).then(handleResponse);
+    const response = await fetch(`${api.apiUrl}/users/register`, requestOptions);
+    return handleResponse(response);
 }
 
-function update(user) {
+async function update(user) {
     const requestOptions = {
         method: 'PUT',
         headers: { ...authHeader(), 'Content-Type': 'application/json' },
         body: JSON.stringify(user)
     };
 
-    return fetch(`${api.apiUrl}/users/${user.id}`, requestOptions).then(handleResponse);;
+    const response = await fetch(`${api.apiUrl}/users/${user.id}`, requestOptions);
+    return handleResponse(response);;
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
+async function _delete(id) {
     const requestOptions = {
         method: 'DELETE',
         headers: authHeader()
     };
 
-    return fetch(`${api.apiUrl}/users/${id}`, requestOptions).then(handleResponse);
+    const response = await fetch(`${api.apiUrl}/users/${id}`, requestOptions);
+    return handleResponse(response);
 }
 
 function handleResponse(response) {

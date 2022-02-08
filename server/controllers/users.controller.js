@@ -27,13 +27,13 @@ export const getAllUsers = async () => {
   return new Promise((resolve, reject) => {
     Users.find({}, async (err, users) => {
       if (err) return reject(err);
-      const json = await getUsersJson();
+      const usersJson = await getUsersJson();
       users = users.map((user) => {
-        const _json = json.find((_user) => _user._id === user._id.toString());
-        if (_json) {
+        const _usersJson = usersJson.find((_user) => _user._id === user._id.toString());
+        if (_usersJson) {
           return {
             userName: user.userName,
-            ..._json
+            ..._usersJson
           };
         }
         return {
@@ -62,10 +62,22 @@ export const getUsersJson = async () => {
  * @params {string} id
  * @returns
  */
-export const getUserJson = async (id) => {
+export const getUserJson = async (_id) => {
   return new Promise(async (resolve, reject) => {
     const json = await readJsonFile(memberAPI.usersJson, resolve);
-    resolve(json.find((user) => user.id === id));
+    resolve(json.find((user) => user._id === _id));
+  });
+};
+
+/**
+ * @export
+ * @params {string} _id
+ * @returns
+ */
+ export const getUserPermsJson = async (_id) => {
+  return new Promise(async (resolve, reject) => {
+    const json = await readJsonFile(memberAPI.permJson, resolve);
+    resolve(json.find((user) => user._id === _id));
   });
 };
 
@@ -104,13 +116,15 @@ export const addUserFile = (_id, user) => {
 
     const permObj = {
       _id,
-      permissions: {
+      abilities: {
         viewSub: true,
         createSub: false,
         deleteSub: false,
-        viewMovie: true,
+        updateSub: false,
+        viewMovie: false,
         createMovie: false,
         deleteMovie: false,
+        updateMovie: false,
       },
     };
 
@@ -146,7 +160,6 @@ export const addUser = async (newUser) => {
 export const addUserAdmin = async (newUser) => {
   const users = await getAllUsers();
   const exists = users.find((user) => user.userName === newUser.userName);
-
   if (exists) {
     return console.warn("User name already exists");
   }

@@ -1,7 +1,7 @@
 import { userConstants } from "../constants";
 import { userService } from "../../services/user.service";
 import { alertActions } from "./alert.actions";
-import { history } from './../../services/history.service';
+import { history } from "./../../services/history.service";
 
 export const userActions = {
   login,
@@ -9,7 +9,8 @@ export const userActions = {
   register,
   getAll,
   delete: _delete,
-  addAdminUser
+  addAdminUser,
+  userPermissions,
 };
 
 function login(username, password) {
@@ -108,6 +109,27 @@ function addAdminUser(user) {
   }
   function success(users) {
     return { type: userConstants.NEW_USER_SUCCESS, users };
+  }
+  function failure(error) {
+    return { type: userConstants.NEW_USER_FAILURE, error };
+  }
+}
+
+function userPermissions(user, users) {
+  return (dispatch) => {
+    dispatch(request(user));
+
+    userService.userPermissions(user._id).then(
+      (permissions) => dispatch(success(permissions, users)),
+      (error) => dispatch(failure(user, error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: userConstants.USER_PERMISSIONS_REQUEST };
+  }
+  function success(permissions, { items }) {
+    return { type: userConstants.USER_PERMISSIONS_SUCCESS, permissions, items };
   }
   function failure(error) {
     return { type: userConstants.NEW_USER_FAILURE, error };

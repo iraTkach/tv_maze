@@ -9,6 +9,7 @@ import {
   addUserAdmin,
   updateUser,
   deleteUser,
+  getUserPermsJson,
 } from "../controllers/users.controller";
 
 const router = Router();
@@ -24,6 +25,11 @@ router.post(
 router.post(
   "/json/:id",
   async (req, res) => await apiWrapper(req, res, getUserJson)
+);
+
+router.post(
+  "/permissions/:id",
+  async (req, res) => await apiWrapper(req, res, getUserPermsJson)
 );
 
 router.post(
