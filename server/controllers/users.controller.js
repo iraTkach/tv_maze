@@ -2,7 +2,12 @@ import Users from "../models/user.model";
 import { getAll } from "../services/axios";
 import { userAPI } from "../services/config/user.config";
 import { memberAPI } from "./../services/config/user.config";
-import { handleJson, readJsonFile } from "./../services/utils";
+import {
+  handleJson,
+  readJsonFile,
+  mergeUsersWithJson,
+  mergeUserWithJson,
+} from "./../services/utils";
 
 const assert = require("assert");
 
@@ -27,21 +32,7 @@ export const getAllUsers = async () => {
   return new Promise((resolve, reject) => {
     Users.find({}, async (err, users) => {
       if (err) return reject(err);
-      const usersJson = await getUsersJson();
-      users = users.map((user) => {
-        const _usersJson = usersJson.find((_user) => _user._id === user._id.toString());
-        if (_usersJson) {
-          return {
-            userName: user.userName,
-            ..._usersJson
-          };
-        }
-        return {
-          _id: user._id.toString(),
-          userName: user.userName
-        };
-      });
-      resolve(users);
+      resolve(mergeUsersWithJson(users));
     });
   });
 };
@@ -74,7 +65,7 @@ export const getUserJson = async (_id) => {
  * @params {string} _id
  * @returns
  */
- export const getUserPermsJson = async (_id) => {
+export const getUserPermsJson = async (_id) => {
   return new Promise(async (resolve, reject) => {
     const json = await readJsonFile(memberAPI.permJson, resolve);
     resolve(json.find((user) => user._id === _id));
@@ -169,19 +160,20 @@ export const addUserAdmin = async (newUser) => {
     password: newUser.password,
   });
 
-  await user.save(async (err) => {
+  await user.save((err) => {
     if (err) {
       return console.error(err);
     }
 
     console.info("Added successfully");
-    //console.info(user._id);
-    await addUserFile(user._id, newUser)
-      .then((data) => console.log(data))
-      .catch((err) => console.error(err));
   });
 
-  users.push(user);
+  await addUserFile(user._id.toString(), newUser)
+    .then((data) => console.log(data))
+    .catch((err) => console.error(err));
+
+  const _user = await mergeUserWithJson(user, user._id.toString());
+  users.push({ ..._user });
 
   return users;
 };

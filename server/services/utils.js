@@ -1,5 +1,6 @@
 import { stub } from "./request";
 import { readFileSync, readFile, writeFile } from "fs";
+import { getUsersJson } from "../controllers/users.controller";
 
 /**
  * @constant
@@ -96,4 +97,46 @@ export const readJsonFile = async (path) => {
   } catch (parseJsonError) {
     console.error(parseJsonError);
   }
+};
+
+/**
+ * @export
+ * @param {array} [users]
+ * @returns {array}
+ */
+export const mergeUsersWithJson = async (users = []) => {
+  const usersJson = await getUsersJson();
+  return users?.map((user) => {
+    const _usersJson = usersJson.find(
+      (_user) => _user._id === user._id.toString()
+    );
+    if (_usersJson) {
+      return {
+        userName: user.userName,
+        ..._usersJson,
+      };
+    }
+    return {
+      _id: user._id.toString(),
+      userName: user.userName,
+    };
+  });
+};
+
+/**
+ * @export
+ * @param {string} _id
+ * @returns
+ */
+export const mergeUserWithJson = async (user, _id) => {
+  const usersJson = await getUsersJson();
+  const userJson = usersJson.find((user) => user._id === _id);
+  if (userJson) {
+    return {
+      userName: user.userName,
+      ...userJson,
+    };
+  }
+
+  throw new Error(`Unable to find user: ${_id}`);
 };
