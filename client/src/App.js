@@ -6,6 +6,7 @@ import Home from "./pages/home";
 import { history } from "./services/history.service";
 import { alertActions } from "./models/actions";
 import { connect } from "react-redux";
+import Login from './pages/login';
 
 const App = (props) => {
   useEffect(() => {
@@ -22,6 +23,7 @@ const App = (props) => {
       <Routes>
         <Route element={<MainLayout alert={alert} />}>
           <Route path="/" element={<Home title="Home" back={false} />} />
+          <Route path="/login" element={<Login title="Login" back={false} />} />
           <Route
             path="users"
             element={<Users title="Users management" back={true} />}
