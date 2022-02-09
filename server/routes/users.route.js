@@ -12,24 +12,36 @@ import {
   getUserPermsJson,
 } from "../controllers/users.controller";
 
+import { login, logout } from "./../controllers/authenticate.controller";
+
 const router = Router();
 router.get("/", async (req, res) => await apiWrapper(req, res, getAllUsers));
 
 router.get("/:id", async (req, res) => await apiWrapper(req, res, getUserById));
 
 router.post(
+  "/authenticate",
+  async (req, res) => await apiWrapper(req, res, login, "post")
+);
+
+router.post(
+  "/logout",
+  async (req, res) => await apiWrapper(req, res, logout, "post")
+);
+
+router.post(
   "/json",
-  async (req, res) => await apiWrapper(req, res, getUsersJson)
+  async (req, res) => await apiWrapper(req, res, getUsersJson, "post")
 );
 
 router.post(
   "/json/:id",
-  async (req, res) => await apiWrapper(req, res, getUserJson)
+  async (req, res) => await apiWrapper(req, res, getUserJson, "post")
 );
 
 router.post(
   "/permissions/:id",
-  async (req, res) => await apiWrapper(req, res, getUserPermsJson)
+  async (req, res) => await apiWrapper(req, res, getUserPermsJson, "post")
 );
 
 router.post(

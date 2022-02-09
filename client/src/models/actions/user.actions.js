@@ -14,7 +14,8 @@ export const userActions = {
   userPermissions,
 };
 
-function login(username, password) {
+function login({ user }) {
+  const { username, password } = user;
   return (dispatch) => {
     dispatch(request({ username }));
 

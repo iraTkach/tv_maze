@@ -1,0 +1,8 @@
+.login {
+    max-width: 500px;
+    margin: 100px auto !important;
+    background: #fff;
+    padding: 30px !important;
+    border-radius: 8px;
+    box-shadow: 0 0 3px #ccc;
+}

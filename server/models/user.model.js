@@ -5,8 +5,11 @@ import { Schema, model } from "mongoose";
 
 const userSchema = new Schema({
   //id:  {type: ObjectId, required: true}, // by-default is not required(false).
-  userName: { type: String, required: false },
-  password: { type: String, required: false },
+  userName: { type: String, required: true },
+  password: { type: String, required: true },
+  isSignedIn: { type: Boolean, required: false },
+  signInAt: { type: Date, required: false },
+  signOutAt: { type: Date, required: false },
   //role: { type: String, required: true },
 });
 
