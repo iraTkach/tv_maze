@@ -1,6 +1,5 @@
 import { stub } from "./request";
 import { readFileSync, readFile, writeFile } from "fs";
-import { getUsersJson } from "../controllers/users.controller";
 
 /**
  * @constant
@@ -102,10 +101,10 @@ export const readJsonFile = async (path) => {
 /**
  * @export
  * @param {array} [users]
+ * @param {array} [usersJson]
  * @returns {array}
  */
-export const mergeUsersWithJson = async (users = []) => {
-  const usersJson = await getUsersJson();
+export const mergeUsersWithJson = async (users = [], usersJson = []) => {
   return users?.map((user) => {
     const _usersJson = usersJson.find(
       (_user) => _user._id === user._id.toString()
@@ -125,17 +124,45 @@ export const mergeUsersWithJson = async (users = []) => {
 
 /**
  * @export
- * @param {string} _id
+ * @param {*} userJson
  * @returns
  */
-export const mergeUserWithJson = async (user, _id) => {
-  const usersJson = await getUsersJson();
-  const userJson = usersJson.find((user) => user._id === _id);
+export const mergeUserWithJson = async (user, userJson) => {
+  // const usersJson = await getUsersJson();
+  // const userJson = usersJson.find((user) => user._id === _id);
   if (userJson) {
     return {
       userName: user.userName,
       ...userJson,
     };
+  }
+};
+
+/**
+ * @export
+ * @param {string} path
+ * @param {*} data
+ * @param {string} _id
+ * @param {array} [usersJson]
+ * @returns
+ */
+export const updateUserJson = async (path, data, _id, usersJson = []) => {
+  const idx = usersJson.findIndex((user) => user._id === _id);
+
+  if (idx > -1) {
+    usersJson[idx] = {
+      ...usersJson[idx],
+      ...data,
+    };
+
+    return updateFile(
+      path,
+      JSON.stringify(usersJson, null, 4),
+      () => {
+        return "A file was updated";
+      },
+      false
+    );
   }
 
   throw new Error(`Unable to find user: ${_id}`);

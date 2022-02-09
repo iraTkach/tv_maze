@@ -7,6 +7,7 @@ import {
   readJsonFile,
   mergeUsersWithJson,
   mergeUserWithJson,
+  updateUserJson,
 } from "./../services/utils";
 
 const assert = require("assert");
@@ -32,7 +33,8 @@ export const getAllUsers = async () => {
   return new Promise((resolve, reject) => {
     Users.find({}, async (err, users) => {
       if (err) return reject(err);
-      resolve(mergeUsersWithJson(users));
+      const usersJson = await getUsersJson();
+      resolve(mergeUsersWithJson(users, usersJson));
     });
   });
 };
@@ -172,7 +174,8 @@ export const addUserAdmin = async (newUser) => {
     .then((data) => console.log(data))
     .catch((err) => console.error(err));
 
-  const _user = await mergeUserWithJson(user, user._id.toString());
+  const userJson = await getUserJson(user._id.toString());
+  const _user = await mergeUserWithJson(user, userJson);
   users.push({ ..._user });
 
   return users;
@@ -184,14 +187,19 @@ export const addUserAdmin = async (newUser) => {
  * @param {String} id
  * @param {*} userToUpdate
  */
-export const updateUser = (id, userToUpdate) => {
+export const updateUser = async (id, data) => {
   return new Promise((resolve, reject) => {
-    Users.findByIdAndUpdate(id, userToUpdate, (err) => {
+    Users.findById(id, async (err, user) => {
       if (err) {
         reject(err);
       } else {
-        resolve("Updated successfully");
-        console.log("Updated successfully");
+        const usersJson = await getUsersJson();
+        const _user =
+          user && (await updateUserJson(memberAPI.usersJson, data, id, usersJson));
+        // console.log(userToUpdate);
+
+        resolve(_user);
+        //console.log("Updated successfully for ", _user);
       }
     });
   });

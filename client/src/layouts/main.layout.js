@@ -24,7 +24,7 @@ const MainLayout = (props) => {
 
   // TODO (Ira Tkach): Create redux call to check if user is
   // available and loggedin in the system.
-  const isLoggedIn = window.sessionStorage.getItem("user");
+  const isLoggedIn = true;//window.sessionStorage.getItem("user");
 
   // useEffect(() => {
 
