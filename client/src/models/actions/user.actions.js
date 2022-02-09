@@ -10,6 +10,7 @@ export const userActions = {
   getAll,
   delete: _delete,
   addAdminUser,
+  updateAdminUser,
   userPermissions,
 };
 
@@ -106,6 +107,27 @@ function addAdminUser(user) {
 
   function request() {
     return { type: userConstants.NEW_ADMIN_USER_REQUEST };
+  }
+  function success(users) {
+    return { type: userConstants.NEW_USER_SUCCESS, users };
+  }
+  function failure(error) {
+    return { type: userConstants.NEW_USER_FAILURE, error };
+  }
+}
+
+function updateAdminUser(_id, user) {
+  return (dispatch) => {
+    dispatch(request(user));
+
+    userService.updateAdminUser(_id, user).then(
+      (users) => dispatch(success(users)),
+      (error) => dispatch(failure(user, error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: userConstants.UPDATE_ADMIN_USER_REQUEST };
   }
   function success(users) {
     return { type: userConstants.NEW_USER_SUCCESS, users };

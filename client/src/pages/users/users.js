@@ -8,7 +8,7 @@ import { AddUser } from "./add.user";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
 import styles from "./user.module.css";
-import { toForm } from "./../../utils/form";
+import { sanitize } from "./../../utils/form";
 
 const getButtons = (loading, onClick) => {
   return [
@@ -27,6 +27,7 @@ const Users = (props) => {
     getAll,
     updateMeta,
     addAdminUser,
+    updateAdminUser,
     userPermissions,
   } = props;
 
@@ -49,12 +50,11 @@ const Users = (props) => {
         (user) => user._id === users.permissions._id
       );
       if (user) {
-        Object.assign(user, users.permissions.abilities);
-        // setFields(toForm(user, "user"));
-        setFields(toForm(user));
+        Object.assign(user, users.permissions);
+        setFields(user);
       } else {
         message.error("Unable to find selected user");
-        setFields([]);
+        setFields(null);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,13 +64,14 @@ const Users = (props) => {
     setVisible(true);
     setModalTitle(_title);
     setIsEdit(false);
-    setFields([]);
+    setFields(null);
   };
 
   const handleEditUser = (_title, user) => {
     setVisible(true);
     setModalTitle(_title);
     setIsEdit(true);
+    setFields(user);
     userPermissions(user, users);
   };
 
@@ -115,7 +116,6 @@ const Users = (props) => {
           <div className={styles.actions}>
             <EditOutlined
               onClick={() => {
-                //alert("Edit")
                 handleEditUser("Edit User", data);
               }}
             />
@@ -138,19 +138,19 @@ const Users = (props) => {
   const onCreate = (values) => {
     console.log("Received values of form: ", values);
     setVisible(false);
-    addAdminUser(values);
+    addAdminUser(sanitize(values));
   };
 
   const onUpdate = (values) => {
     console.log("Received values of form: ", values);
     setVisible(false);
-    // updateAdminUser(values);
+    updateAdminUser(fields._id, sanitize(values));
   };
 
   const [visible, setVisible] = useState(false);
   const [modalTitle, setModalTitle] = useState("Add User");
   const [isEdit, setIsEdit] = useState(false);
-  const [fields, setFields] = useState([]);
+  const [fields, setFields] = useState(null);
 
   return (
     <Spin spinning={users?.loading}>
@@ -180,6 +180,7 @@ const userCreators = {
   getAll: userActions.getAll,
   updateMeta: mainActions.updateMeta,
   addAdminUser: userActions.addAdminUser,
+  updateAdminUser: userActions.updateAdminUser,
   userPermissions: userActions.userPermissions,
 };
 

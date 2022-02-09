@@ -18,6 +18,7 @@ export function users(state = {}, action) {
       };
     case userConstants.NEW_USER_REQUEST:
     case userConstants.NEW_ADMIN_USER_REQUEST:
+    case userConstants.UPDATE_ADMIN_USER_REQUEST:
     case userConstants.USER_PERMISSIONS_REQUEST:
       return {
         loading: true,

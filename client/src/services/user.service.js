@@ -20,6 +20,7 @@ export const userService = {
     update,
     delete: _delete,
     addAdminUser,
+    updateAdminUser,
     userPermissions
 };
 
@@ -60,6 +61,16 @@ async function addAdminUser(user) {
     };
 
     return fetch(`${api.users}/admin`, requestOptions).then(handleResponse);
+}
+
+async function updateAdminUser(_id, user) {
+    const requestOptions = {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(user)
+    };
+
+    return fetch(`${api.users}/${_id}`, requestOptions).then(handleResponse);
 }
 
 /**

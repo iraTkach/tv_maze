@@ -143,21 +143,21 @@ export const mergeUserWithJson = async (user, userJson) => {
  * @param {string} path
  * @param {*} data
  * @param {string} _id
- * @param {array} [usersJson]
+ * @param {array} [json]
  * @returns
  */
-export const updateUserJson = async (path, data, _id, usersJson = []) => {
-  const idx = usersJson.findIndex((user) => user._id === _id);
+export const updateJson = async (path, data, _id, json = []) => {
+  const idx = json.findIndex((item) => item._id === _id);
 
   if (idx > -1) {
-    usersJson[idx] = {
-      ...usersJson[idx],
+    json[idx] = {
+      ...json[idx],
       ...data,
     };
 
     return updateFile(
       path,
-      JSON.stringify(usersJson, null, 4),
+      JSON.stringify(json, null, 4),
       () => {
         return "A file was updated";
       },
@@ -165,5 +165,5 @@ export const updateUserJson = async (path, data, _id, usersJson = []) => {
     );
   }
 
-  throw new Error(`Unable to find user: ${_id}`);
+  throw new Error(`Unable to find item: ${_id}`);
 };

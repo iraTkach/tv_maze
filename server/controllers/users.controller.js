@@ -7,7 +7,7 @@ import {
   readJsonFile,
   mergeUsersWithJson,
   mergeUserWithJson,
-  updateUserJson,
+  updateJson,
 } from "./../services/utils";
 
 const assert = require("assert");
@@ -46,6 +46,17 @@ export const getAllUsers = async () => {
 export const getUsersJson = async () => {
   return new Promise((resolve, reject) => {
     const json = readJsonFile(memberAPI.usersJson, resolve);
+    resolve(json);
+  });
+};
+
+/**
+ * @export
+ * @returns
+ */
+export const getPermsJson = async () => {
+  return new Promise((resolve, reject) => {
+    const json = readJsonFile(memberAPI.permJson, resolve);
     resolve(json);
   });
 };
@@ -109,16 +120,7 @@ export const addUserFile = (_id, user) => {
 
     const permObj = {
       _id,
-      abilities: {
-        viewSub: true,
-        createSub: false,
-        deleteSub: false,
-        updateSub: false,
-        viewMovie: false,
-        createMovie: false,
-        deleteMovie: false,
-        updateMovie: false,
-      },
+      abilities: { ...user.abilities },
     };
 
     handleJson(memberAPI.usersJson, "_id", userObj, resolve);
@@ -194,12 +196,41 @@ export const updateUser = async (id, data) => {
         reject(err);
       } else {
         const usersJson = await getUsersJson();
-        const _user =
-          user && (await updateUserJson(memberAPI.usersJson, data, id, usersJson));
-        // console.log(userToUpdate);
+        const permissionJson = await getPermsJson();
 
-        resolve(_user);
-        //console.log("Updated successfully for ", _user);
+        const userData = { ...data };
+        delete userData.abilities;
+        delete userData.userName;
+
+        if (user) {
+          const _user = await updateJson(
+            memberAPI.usersJson,
+            userData,
+            id,
+            usersJson
+          );
+          const _perms = await updateJson(
+            memberAPI.permJson,
+            { abilities: data.abilities },
+            id,
+            permissionJson
+          );
+
+          const users = await getAllUsers();
+          const userJson = await getUserJson(id.toString());
+          const mergedUser = await mergeUserWithJson(user, userJson);
+          
+          resolve(users.map(user => {
+            if (user._id === id.toString()) {
+              return {
+                ...user,
+                ...mergedUser
+              }
+            }
+
+            return user;
+          }));
+        }
       }
     });
   });

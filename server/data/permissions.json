@@ -2,26 +2,43 @@
     {
         "_id": "6203c605188519d30d7d3291",
         "abilities": {
-            "viewSub": true,
-            "createSub": false,
-            "deleteSub": false,
-            "updateSub": false,
-            "viewMovie": false,
-            "createMovie": false,
-            "deleteMovie": false,
-            "updateMovie": false
+            "viewSub": true
         }
     },
     {
         "_id": "6203c62e188519d30d7d3294",
         "abilities": {
+            "viewSub": true
+        }
+    },
+    {
+        "_id": "62040ae92e0ac92a17429343",
+        "abilities": {
+            "viewSub": true
+        }
+    },
+    {
+        "_id": "62040ddb2e0ac92a17429350",
+        "abilities": {
+            "viewSub": true
+        }
+    },
+    {
+        "_id": "62040e252c7a9309ddfd7944",
+        "abilities": {
+            "viewSub": true,
+            "deleteSub": true,
+            "createMovie": true,
+            "updateMovie": false
+        }
+    },
+    {
+        "_id": "620415fe2539de6a28de67ac",
+        "abilities": {
             "viewSub": true,
             "createSub": false,
-            "deleteSub": false,
-            "updateSub": false,
-            "viewMovie": false,
-            "createMovie": false,
-            "deleteMovie": false,
+            "updateSub": true,
+            "viewMovie": true,
             "updateMovie": false
         }
     }

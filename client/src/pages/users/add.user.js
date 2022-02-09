@@ -7,28 +7,20 @@ import {
 } from "@ant-design/icons";
 
 const permissionProps = {
+  xs: 24,
   sm: 12,
-  md: 8,
-  lg: 6,
-  xl: 4,
-  xxl: 2,
+  md: 12,
+  lg: 8,
+  xl: 8,
+  xxl: 8,
 };
 
 export const AddUser = (props) => {
   const [form] = Form.useForm();
-  const {
-    fields = [],
-    visible,
-    onSave,
-    onCancel,
-    title,
-    isEdit = false,
-  } = props;
+  const { fields, visible, onSave, onCancel, title, isEdit = false } = props;
 
   useEffect(() => {
-    if (!fields.length) {
-      form?.resetFields();
-    }
+    fields ? form.setFieldsValue(fields) : form?.resetFields();
   }, [form, fields]);
 
   const prmOpts = [
@@ -44,7 +36,6 @@ export const AddUser = (props) => {
 
   return (
     <Modal
-      forceRender={true}
       visible={visible}
       title={title}
       okText={isEdit ? "Update" : "Add"}
@@ -65,10 +56,12 @@ export const AddUser = (props) => {
       <Form
         form={form}
         layout="vertical"
-        fields={fields}
+        //fields={fields}
         scrollToFirstError={true}
         initialValues={{
-          viewSub: true,
+          abilities: {
+            viewSub: true,
+          },
         }}
       >
         <Form.Item
@@ -124,10 +117,14 @@ export const AddUser = (props) => {
           </Form.Item>
         )}
         <Divider orientation="left">Permissions</Divider>
-        <Row>
+        <Row gutter={[16, 16]}>
           {prmOpts.map((p, idx) => (
             <Col {...permissionProps} key={idx}>
-              <Form.Item name={p.value} label={p.label} valuePropName="checked">
+              <Form.Item
+                name={["abilities", p.value]}
+                label={p.label}
+                valuePropName="checked"
+              >
                 <Switch />
               </Form.Item>
             </Col>
