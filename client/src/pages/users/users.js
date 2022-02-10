@@ -94,7 +94,17 @@ const Users = (props) => {
       dataIndex: "userName",
       key: "userName",
       render(userName, data) {
-        return <Link to={`/users/${data._id}`}>{userName}</Link>;
+        return (
+          <Link
+            to={`/users/${data._id}`}
+            onClick={(e) => {
+              e.preventDefault();
+              handleEditUser("Edit User", data);
+            }}
+          >
+            {userName}
+          </Link>
+        );
       },
     },
     {

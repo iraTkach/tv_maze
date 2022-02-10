@@ -63,7 +63,7 @@ const MainLayout = (props) => {
               </div>
             </div>
           </Header>
-          <Content style={{ margin: user ? "0 16px" : 30 }}>
+          <Content style={{ margin: user ? "0 16px" : 30, padding: '20px 0' }}>
             {user && (
               <PageHeader
                 ghost={false}
