@@ -61,8 +61,8 @@ const App = (props) => {
 };
 
 function mapState(state) {
-  const { alert } = state;
-  return { alert };
+  const { alert, authentication: {user} } = state;
+  return { alert, user };
 }
 
 const actionCreators = {

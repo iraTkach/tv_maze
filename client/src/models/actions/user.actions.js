@@ -2,6 +2,7 @@ import { userConstants } from "../constants";
 import { userService } from "../../services/user.service";
 import { alertActions } from "./alert.actions";
 import { history } from "./../../services/history.service";
+import { message } from "antd";
 
 export const userActions = {
   login,
@@ -47,19 +48,24 @@ function logout() {
   return { type: userConstants.LOGOUT };
 }
 
-function register(user) {
+function register({ user }) {
   return (dispatch) => {
     dispatch(request(user));
 
     userService.register(user).then(
       (user) => {
-        dispatch(success());
-        history.push("/login");
-        dispatch(alertActions.success("Registration successful"));
+        if (user.error) {
+          dispatch(success(user));
+        } else {
+          dispatch(success(user));
+          // history.replace("/login");
+          window.location.replace("/login");
+          message.success("Registration successful");
+        }
       },
       (error) => {
+        message.error(error.toString());
         dispatch(failure(error.toString()));
-        dispatch(alertActions.error(error.toString()));
       }
     );
   };

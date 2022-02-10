@@ -34,7 +34,7 @@ async function login(username, password) {
   const response = await fetch(`${api.users}/authenticate`, requestOptions);
   const user = await handleResponse(response);
 
-  if (user?.name) {
+  if (user?.isSignedIn) {
     // store user details and jwt token in local storage to keep user logged in between page refreshes
     window.localStorage.setItem("user", JSON.stringify(user));
   }
@@ -112,7 +112,7 @@ async function getById(id) {
 
 async function register(user) {
   const requestOptions = {
-    method: "POST",
+    method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(user),
   };

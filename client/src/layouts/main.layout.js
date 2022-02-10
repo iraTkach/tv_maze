@@ -22,6 +22,8 @@ const MainLayout = (props) => {
     setCollapsed(collapsed);
   };
 
+  console.log('>>>>>>>>>>>>>>>>>>>>>>>>>',user);
+
   useEffect(() => {
     const { location } = window;
     const isLogin = location.href.match(/login/);
@@ -65,9 +67,6 @@ const MainLayout = (props) => {
           </Header>
           <Content style={{ margin: user ? "0 16px" : 30 }}>
             {user && <LayoutMeta.Breadcrumbs />}
-            {alert?.message && (
-              <div className={`alert ${alert.type}`}>{alert.message}</div>
-            )}
             {user && (
               <PageHeader
                 ghost={false}

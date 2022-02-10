@@ -66,7 +66,7 @@ const Login = (props) => {
             },
           ]}
         >
-          <Input />
+          <Input autoComplete="username" />
         </Form.Item>
 
         <Form.Item
@@ -80,12 +80,11 @@ const Login = (props) => {
             },
           ]}
         >
-          <Input.Password />
+          <Input.Password autoComplete="current-password" />
         </Form.Item>
         <Form.Item
           wrapperCol={{
-            offset: 8,
-            span: 16,
+            span: 24,
           }}
         >
           {isRegister ? (
@@ -117,7 +116,7 @@ const homeCreators = {
   error: alertActions.error,
   updateMeta: mainActions.updateMeta,
   login: userActions.login,
-  registration: userActions.registration,
+  register: userActions.register,
 };
 
 export default connect(mapState, homeCreators)(Login);

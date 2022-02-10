@@ -1,5 +1,7 @@
 import Users from "../models/user.model";
-import { getUserJson } from "./users.controller";
+import { getUserJson, getUsersJson } from "./users.controller";
+import { updateJson } from "./../services/utils";
+import { memberAPI } from './../services/config/user.config';
 
 export const login = async (user) => {
   return new Promise((resolve, reject) => {
@@ -29,7 +31,7 @@ export const login = async (user) => {
             isSignedIn: true,
           });
         } else {
-          reject({error: "Invalid authentication credentials"});
+          reject({ error: "Invalid authentication credentials" });
         }
       }
     );
@@ -60,6 +62,48 @@ export const logout = async (user) => {
           resolve({ isSignedIn: false });
         } else {
           reject("No user credentials found");
+        }
+      }
+    );
+  });
+};
+
+export const register = async (user) => {
+  return new Promise((resolve, reject) => {
+    const { username, password, name } = user;
+    Users.findOneAndUpdate(
+      {
+        userName: username,
+      },
+      {
+        $set: {
+          password,
+          isSignedIn: false
+        },
+      },
+      async (err, _user) => {
+        if (err) {
+          return reject(err);
+        }
+
+        if (_user) {
+          const usersJson = await getUsersJson();
+
+          await updateJson(
+            memberAPI.usersJson,
+            { name },
+            _user._id.toString(),
+            usersJson
+          );
+
+          resolve({
+            name,
+            username: _user.userName,
+            isSignedIn: false,
+          });
+
+        } else {
+          reject({error: "Unable to register user"});
         }
       }
     );

@@ -9,17 +9,17 @@ import {
   addUserAdmin,
   updateUser,
   deleteUser,
-  getUserPermsJson,
+  getUserPermsJson
 } from "../controllers/users.controller";
 
-import { login, logout } from "./../controllers/authenticate.controller";
+import { login, logout, register } from "../controllers/authenticate.controller";
 
 const router = Router();
 router.get("/", async (req, res) => await apiWrapper(req, res, getAllUsers));
 
 router.get("/:id", async (req, res) => await apiWrapper(req, res, getUserById));
 
-router.post(
+router.put(
   "/register",
   async (req, res) => await apiWrapper(req, res, register, "post")
 );
