@@ -20,6 +20,11 @@ router.get("/", async (req, res) => await apiWrapper(req, res, getAllUsers));
 router.get("/:id", async (req, res) => await apiWrapper(req, res, getUserById));
 
 router.post(
+  "/register",
+  async (req, res) => await apiWrapper(req, res, register, "post")
+);
+
+router.post(
   "/authenticate",
   async (req, res) => await apiWrapper(req, res, login, "post")
 );

@@ -32,8 +32,8 @@ const Users = (props) => {
   } = props;
 
   useEffect(() => {
-    getAll();
-  }, [getAll]);
+    user && getAll();
+  }, [getAll, user]);
 
   useEffect(() => {
     updateMeta(
@@ -172,8 +172,8 @@ const Users = (props) => {
 };
 
 function mapState(state) {
-  const { user, users } = state;
-  return { user, users };
+  const { users } = state;
+  return { users };
 }
 
 const userCreators = {

@@ -1,4 +1,5 @@
 import { userConstants } from "../constants";
+import {message} from 'antd';
 
 let user = JSON.parse(localStorage.getItem("user"));
 const initialState = user ? { loggedIn: true, user } : {};
@@ -8,10 +9,18 @@ export function authentication(state = initialState, action) {
     case userConstants.LOGIN_REQUEST:
       return {
         loggingIn: true,
-        user: action.user,
         loading: true,
       };
     case userConstants.LOGIN_SUCCESS:
+      if (action?.user?.error) {
+        message.error(action?.user?.error);
+
+        return {
+          user: null,
+          loading: false,
+          loggedIn: false,
+        };
+      }
       return {
         loggedIn: true,
         user: action.user,
@@ -19,7 +28,9 @@ export function authentication(state = initialState, action) {
       };
     case userConstants.LOGIN_FAILURE:
       return {
+        user: null,
         loading: false,
+        loggedIn: false,
       };
     case userConstants.LOGOUT:
       return {};

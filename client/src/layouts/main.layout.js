@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "antd/dist/antd.min.css";
 import { Button, Layout, PageHeader } from "antd";
 import { Outlet } from "react-router-dom";
@@ -8,14 +8,13 @@ import { store } from "../models/store";
 import { connect } from "react-redux";
 import { mainActions } from "./../models/actions/main.actions";
 import { userActions } from "./../models/actions/user.actions";
-import Login from "../pages/login";
 
 import styles from "./layout.module.css";
 
 const { Header, Content, Footer, Sider } = Layout;
 
 const MainLayout = (props) => {
-  const { metadata = {}, logout } = props;
+  const { metadata = {}, logout, user } = props;
 
   const [collapsed, setCollapsed] = useState(true);
 
@@ -23,19 +22,19 @@ const MainLayout = (props) => {
     setCollapsed(collapsed);
   };
 
-  // TODO (Ira Tkach): Create redux call to check if user is
-  // available and loggedin in the system.
-  const userJson = window.localStorage.getItem("user");
-  let user = null;
+  useEffect(() => {
+    const { location } = window;
+    const isLogin = location.href.match(/login/);
+    const isRegister = location.href.match(/register/);
 
-  if (userJson) {
-    try {
-      user = JSON.parse(userJson);
-    } catch(e) {
-      console.error(e);   
+    if (!user) {
+      if (isLogin || isRegister) {
+        // Do nothing.
+      } else {
+        window.location.replace("/login");
+      }
     }
-  }
-
+  }, [user]);
 
   // useEffect(() => {
 
@@ -55,7 +54,13 @@ const MainLayout = (props) => {
             <div className={styles.slogan}>TVMaze</div>
             <div className={styles.user}>
               <div>Welcome, {user ? user.name : "Guest"}</div>
-              <div>{user && <Button type="primary" onClick={logout}>Logout</Button>}</div>
+              <div>
+                {user && (
+                  <Button type="primary" onClick={logout}>
+                    Logout
+                  </Button>
+                )}
+              </div>
             </div>
           </Header>
           <Content style={{ margin: user ? "0 16px" : 30 }}>
@@ -71,7 +76,7 @@ const MainLayout = (props) => {
                 extra={metadata?.buttons}
               />
             )}
-            {user ? <Outlet /> : <Login />}
+            <Outlet/>
           </Content>
           <Footer style={{ textAlign: "center" }}>TVMaze</Footer>
         </Layout>

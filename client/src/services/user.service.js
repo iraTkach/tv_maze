@@ -33,9 +33,11 @@ async function login(username, password) {
 
   const response = await fetch(`${api.users}/authenticate`, requestOptions);
   const user = await handleResponse(response);
-  // store user details and jwt token in local storage to keep user logged in between page refreshes
-  window.localStorage.setItem("user", JSON.stringify(user));
 
+  if (user?.name) {
+    // store user details and jwt token in local storage to keep user logged in between page refreshes
+    window.localStorage.setItem("user", JSON.stringify(user));
+  }
   return user;
 }
 
@@ -105,9 +107,7 @@ async function getById(id) {
     headers: authHeader(),
   };
 
-  return fetch(`${api.apiUrl}/users/${id}`, requestOptions).then(
-    handleResponse
-  );
+  return fetch(`${api.users}/${id}`, requestOptions).then(handleResponse);
 }
 
 async function register(user) {
@@ -117,7 +117,7 @@ async function register(user) {
     body: JSON.stringify(user),
   };
 
-  const response = await fetch(`${api.apiUrl}/users/register`, requestOptions);
+  const response = await fetch(`${api.users}/register`, requestOptions);
   return handleResponse(response);
 }
 

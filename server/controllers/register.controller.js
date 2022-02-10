@@ -1,7 +1,7 @@
 import Users from "../models/user.model";
 import { getUserJson } from "./users.controller";
 
-export const login = async (user) => {
+export const register = async (user) => {
   return new Promise((resolve, reject) => {
     const { username, password } = user;
 
@@ -29,7 +29,7 @@ export const login = async (user) => {
             isSignedIn: true,
           });
         } else {
-          reject({error: "Invalid authentication credentials"});
+          reject("Invalid authentication credentials");
         }
       }
     );

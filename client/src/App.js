@@ -11,22 +11,39 @@ import Login from './pages/login';
 const App = (props) => {
   useEffect(() => {
     history.listen((location, action) => {
-      // clear alert on location change
+      // Clear alert on location change
       props.clearAlerts();
     });
   });
 
   const { alert } = props;
 
+  // TODO (Ira Tkach): Create redux call to check if user is
+  // available and loggedin in the system.
+  const userJson = window.localStorage.getItem("user");
+  let user = null;
+
+  if (userJson) {
+    try {
+      user = JSON.parse(userJson);
+      if (user.error) {
+        user = null;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<MainLayout alert={alert} />}>
-          <Route path="/" element={<Home title="Home" back={false} />} />
-          <Route path="/login" element={<Login title="Login" back={false} />} />
+        <Route element={<MainLayout user={user} alert={alert} />}>
+          <Route path="/" element={<Home user={user} title="Home" back={false} />} />
+          <Route path="/login" element={<Login user={user} title="Login" back={false} />} />
+          <Route path="/register" element={<Login user={user} title="Register" back={false} isRegister={true} />} />
           <Route
             path="users"
-            element={<Users title="Users management" back={true} />}
+            element={<Users user={user} title="Users management" back={true} />}
           />
           <Route
             path="*"
