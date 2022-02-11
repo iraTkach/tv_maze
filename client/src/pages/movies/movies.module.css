@@ -1,0 +1,35 @@
+.movies {
+    margin-top: 20px;
+}
+
+.card {
+    box-shadow: 0 0 3px #ccc;
+    transition: all 1s ease;
+}
+
+.card:hover {
+    transform: scale(1.01);
+}
+
+.desc {
+    display: flex;
+    flex-direction: column;
+}
+
+.desc div.tags {
+    display: flex;
+    flex-direction: row;
+    gap: 10px 5px;
+    flex-wrap: wrap;
+}
+
+.desc div.tags span {
+    cursor: pointer;
+    transition: all 1s ease;
+}
+
+.desc div.tags span:hover {
+    color: #096dd9;
+    background: #e6f7ff;
+    border-color: #91d5ff;
+}

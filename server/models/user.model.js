@@ -10,6 +10,7 @@ const userSchema = new Schema({
   isSignedIn: { type: Boolean, required: false },
   signInAt: { type: Date, required: false },
   signOutAt: { type: Date, required: false },
+  isAdmin: { type: Boolean, required: false },
   //role: { type: String, required: true },
 });
 

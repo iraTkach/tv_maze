@@ -46,7 +46,7 @@ const MainLayout = (props) => {
         {user && (
           <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
             <div className={"logo"} />
-            <LayoutMeta.Menu />
+            <LayoutMeta.Menu user={user} />
           </Sider>
         )}
         <Layout className="site-layout">
@@ -64,7 +64,7 @@ const MainLayout = (props) => {
             </div>
           </Header>
           <Content style={{ margin: user ? "0 16px" : 30, padding: '20px 0' }}>
-            {user && (
+            {user && metadata?.title && (
               <PageHeader
                 ghost={false}
                 onBack={metadata?.back ? () => window.history.back() : null}

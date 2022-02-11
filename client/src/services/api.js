@@ -4,6 +4,7 @@ const SERVER = {
 
 export const api = {
   users: `${SERVER.url}/api/users`,
+  movies: `${SERVER.url}/api/movies`,
 };
 
 /**
@@ -43,3 +44,14 @@ export const requestPost = async (url, data = {}) => {
 
   return await response.json(); // parses JSON response into native JavaScript objects
 };
+
+export function authHeader() {
+  // return authorization header with jwt token
+  let user = JSON.parse(localStorage.getItem("user"));
+
+  if (user && user.token) {
+    return { Authorization: "Bearer " + user.token };
+  } else {
+    return {};
+  }
+}

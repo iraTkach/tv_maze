@@ -29,6 +29,7 @@ export const login = async (user) => {
             name: userJson.name,
             username: _user.userName,
             isSignedIn: true,
+            isAdmin: _user?.isAdmin
           });
         } else {
           reject({ error: "Invalid authentication credentials" });

@@ -10,8 +10,8 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import styles from "./user.module.css";
 import { sanitize } from "./../../utils/form";
 
-const getButtons = (loading, onClick) => {
-  return [
+const getButtons = (user, loading, onClick) => {
+  return user?.isAdmin && [
     <Button loading={loading} key="new" type="primary" onClick={onClick}>
       New
     </Button>,
@@ -39,10 +39,10 @@ const Users = (props) => {
     updateMeta(
       title,
       back,
-      getButtons(users?.loading, () => handleAddNewUser("Add User"))
+      getButtons(user, users?.loading, () => handleAddNewUser("Add User"))
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [users, back, title]);
+  }, [user, users, back, title]);
 
   useEffect(() => {
     if (users.permissions) {

@@ -2,11 +2,12 @@ import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./layouts/main.layout";
 import Users from "./pages/users";
-import Home from "./pages/home";
 import { history } from "./services/history.service";
 import { alertActions } from "./models/actions";
 import { connect } from "react-redux";
-import Login from './pages/login';
+import Login from "./pages/login";
+import { Result } from "antd";
+import Movies from './pages/movies/movies';
 
 const App = (props) => {
   useEffect(() => {
@@ -38,19 +39,41 @@ const App = (props) => {
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout user={user} alert={alert} />}>
-          <Route path="/" element={<Home user={user} title="Home" back={false} />} />
-          <Route path="/login" element={<Login user={user} title="Login" back={false} />} />
-          <Route path="/register" element={<Login user={user} title="Register" back={false} isRegister={true} />} />
           <Route
-            path="users"
-            element={<Users user={user} title="Users management" back={true} />}
+            path="/"
+            element={<Movies user={user} title="Movies" back={false} />}
           />
+          <Route
+            path="/login"
+            element={<Login user={user} title="Login" back={false} />}
+          />
+          <Route
+            path="/register"
+            element={
+              <Login
+                user={user}
+                title="Register"
+                back={false}
+                isRegister={true}
+              />
+            }
+          />
+          {user?.isAdmin && (
+            <Route
+              path="users"
+              element={
+                <Users user={user} title="Users management" back={true} />
+              }
+            />
+          )}
           <Route
             path="*"
             element={
-              <main style={{ padding: "1rem" }}>
-                <p>There's nothing here!</p>
-              </main>
+              <Result
+                status="404"
+                title="404"
+                subTitle="Sorry, the page you visited does not exist."
+              />
             }
           />
         </Route>
@@ -61,7 +84,10 @@ const App = (props) => {
 };
 
 function mapState(state) {
-  const { alert, authentication: {user} } = state;
+  const {
+    alert,
+    authentication: { user },
+  } = state;
   return { alert, user };
 }
 
