@@ -1,6 +1,5 @@
 import Movie from "../models/movie.model";
-import { getAll } from "../services/axios";
-//import { movieAPI } from "../services/config/movie.config";
+import { getAllUsers } from './users.controller';
 
 const assert = require("assert");
 
@@ -49,19 +48,47 @@ export const getAllMovies = async () => {
  * @export
  * @async
  * @param {*} id
- *
  */
-export const getMovieById = (id) => {
+ export const getMovieById = (id) => {
   return new Promise((resolve, reject) => {
-    Movie.findById(id, (err, movies) => {
+    Movie.findById(id, (err, movie) => {
       if (err) {
         reject(err);
       } else {
-        resolve(movies);
+        resolve(movie);
       }
     });
   });
 };
+
+/**
+ * @export
+ * @async
+ * @param {*} id
+ */
+ export const getMovieSubs = (id) => {
+  return new Promise((resolve, reject) => {
+    Movie.findById(id, async (err, movie) => {
+      if (err) {
+        reject(err);
+      } else {
+        const users = await getAllUsers();
+        movie.subscribers = users.map(user => {
+          if (user?.subscriptions?.includes(id)) {
+            return {
+              _id: user._id,
+              userName: user.userName,          
+            }
+          }
+        }).filter(user => user);
+
+        resolve(movie);
+      }
+    });
+  });
+};
+
+
 
 /**
  * @export

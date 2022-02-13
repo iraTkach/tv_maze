@@ -9,6 +9,7 @@ const movieSchema = new Schema({
   genres: { type: Array, required: true },
   image: { type: String, required: false },
   premiered: { type: Date, required: true },
+  subscribers: { type: Array, required: false },
 });
 
 // 'model' is a class which we construct document in a collection

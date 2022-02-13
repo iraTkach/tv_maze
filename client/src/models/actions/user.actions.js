@@ -13,7 +13,8 @@ export const userActions = {
   addAdminUser,
   updateAdminUser,
   userPermissions,
-  handleUserSubs
+  handleUserSubs,
+  getMovieSubs,
 };
 
 function login({ user }) {
@@ -124,6 +125,27 @@ function handleUserSubs(user, movies) {
   }
 }
 
+function getMovieSubs(movie) {
+  return (dispatch) => {
+    dispatch(request(movie));
+
+    userService.getMovieSubs(movie._id).then(
+      (movie) => dispatch(success(movie)),
+      (error) => dispatch(failure(movie, error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: userConstants.MOVIE_SUBSCRIPTION_REQUEST };
+  }
+  function success(movie) {
+    return { type: userConstants.MOVIE_SUBSCRIPTION_SUCCESS, movie };
+  }
+  function failure(error) {
+    return { type: userConstants.MOVIE_SUBSCRIPTION_FAILURE, error };
+  }
+}
+
 function addAdminUser(user) {
   return (dispatch) => {
     dispatch(request(user));
@@ -186,7 +208,6 @@ function userPermissions(user, users) {
     return { type: userConstants.NEW_USER_FAILURE, error };
   }
 }
-
 
 // prefixed function name with underscore because delete is a reserved word in javascript
 function _delete(id) {

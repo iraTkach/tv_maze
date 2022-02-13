@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { mainActions } from "../../models/actions/main.actions";
 import { movieActions } from "./../../models/actions/movie.actions";
 import { userActions } from "./../../models/actions/user.actions";
-
+import { Link } from "react-router-dom";
 import { AddMovie } from "./add.movie";
 
 import {
@@ -45,6 +45,7 @@ const { Meta } = Card;
 const Movies = (props) => {
   const {
     user,
+    users,
     movies,
     title,
     back,
@@ -53,6 +54,7 @@ const Movies = (props) => {
     updateMovie,
     addMovie,
     handleUserSubs,
+    getMovieSubs,
   } = props;
 
   const [abilities, setAbilities] = useState(user?.permission?.abilities || {});
@@ -103,8 +105,9 @@ const Movies = (props) => {
     setFields(movie);
   };
 
-  const showSubscribers = () => {
+  const showSubscribers = (movie) => {
     setIsSubscribersVisible(true);
+    getMovieSubs(movie);
   };
 
   const cancelSubscribers = () => {
@@ -174,7 +177,10 @@ const Movies = (props) => {
                 }
                 actions={[
                   viewSub ? (
-                    <EyeOutlined key="subscribers" onClick={showSubscribers} />
+                    <EyeOutlined
+                      key="subscribers"
+                      onClick={() => showSubscribers(movie)}
+                    />
                   ) : (
                     <Tooltip title="User have no credentials to view movie subscribers.">
                       <EyeInvisibleOutlined key="subscribers" />
@@ -221,6 +227,7 @@ const Movies = (props) => {
         "No movies available for the current user."
       )}
       <Modal
+        className={styles.subscribers}
         title="Subscribers"
         visible={isSubscribersVisible}
         onCancel={cancelSubscribers}
@@ -230,18 +237,18 @@ const Movies = (props) => {
           </Button>,
         ]}
       >
-        <div>
-          <Avatar src="https://joeschmoe.io/api/v1/random" />
-          <span>John Doe</span>
-        </div>
-        <div>
-          <Avatar src="https://joeschmoe.io/api/v1/random" />
-          <span>John Doe</span>
-        </div>
-        <div>
-          <Avatar src="https://joeschmoe.io/api/v1/random" />
-          <span>John Doe</span>
-        </div>
+        <Spin spinning={users?.loading}>
+          {users?.movie?.subscribers?.map((_user, idx) => (
+            <div className={styles.subscriberWrapper} key={idx}>
+              <Avatar src="https://joeschmoe.io/api/v1/random" />
+              {user.isAdmin ? (
+                <Link to={`/users/${_user._id}`}>{_user.userName}</Link>
+              ) : (
+                <span>{_user.userName}</span>
+              )}
+            </div>
+          ))}
+        </Spin>
       </Modal>
       {isMovieForm && (
         <AddMovie
@@ -260,9 +267,8 @@ const Movies = (props) => {
 };
 
 function mapState(state) {
-  console.log(state);
-  const { movies } = state;
-  return { movies };
+  const { movies, users } = state;
+  return { movies, users };
 }
 
 const moviesCreators = {
@@ -270,6 +276,7 @@ const moviesCreators = {
   updateMeta: mainActions.updateMeta,
   addMovie: movieActions.addMovie,
   updateMovie: movieActions.updateMovie,
+  getMovieSubs: userActions.getMovieSubs,
   handleUserSubs: userActions.handleUserSubs,
 };
 

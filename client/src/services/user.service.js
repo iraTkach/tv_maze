@@ -11,7 +11,8 @@ export const userService = {
   addAdminUser,
   updateAdminUser,
   userPermissions,  
-  updateUserSubs
+  updateUserSubs,
+  getMovieSubs
 };
 
 async function login(username, password) {
@@ -108,6 +109,15 @@ async function updateUserSubs(_id, movies) {
   };
 
   return fetch(`${api.users}/${_id}`, requestOptions).then(handleResponse);
+}
+
+async function getMovieSubs(_id) {
+  const requestOptions = {
+    method: "GET",
+    headers: { "Content-Type": "application/json" }
+  };
+
+  return fetch(`${api.movies}/${_id}/users`, requestOptions).then(handleResponse);
 }
 
 async function register(user) {

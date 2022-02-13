@@ -4,6 +4,7 @@ export function users(state = {}, action) {
   switch (action.type) {
     case userConstants.GETALL_REQUEST:
     case userConstants.SUBSCRIPTION_REQUEST:
+    case userConstants.MOVIE_SUBSCRIPTION_REQUEST:
       return {
         loading: true,
       };
@@ -13,8 +14,14 @@ export function users(state = {}, action) {
         items: action.users,
         loading: false,
       };
+    case userConstants.MOVIE_SUBSCRIPTION_SUCCESS:
+      return {
+        movie: action.movie,
+        loading: false,
+      };
     case userConstants.GETALL_FAILURE:
     case userConstants.SUBSCRIPTION_FAILURE:
+    case userConstants.MOVIE_SUBSCRIPTION_FAILURE:
       return {
         error: action.error,
         loading: false,

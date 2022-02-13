@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Spin, Table, Popconfirm, message } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import { userActions } from "./../../models/actions/user.actions";
 import { mainActions } from "./../../models/actions/main.actions";
@@ -31,6 +31,8 @@ const Users = (props) => {
     userPermissions,
   } = props;
 
+  const params = useParams();
+
   useEffect(() => {
     user && getAll();
   }, [getAll, user]);
@@ -41,6 +43,12 @@ const Users = (props) => {
       back,
       getButtons(user, users?.loading, () => handleAddNewUser("Add User"))
     );
+
+    if (params?.id) {
+      const _user = users?.items?.find(user => user._id === params?.id);
+      _user && !visible && handleEditUser("Edit User", _user);
+    }    
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, users, back, title]);
 
@@ -49,6 +57,7 @@ const Users = (props) => {
       const user = users.items.find(
         (user) => user._id === users.permissions._id
       );
+      
       if (user) {
         Object.assign(user, users.permissions);
         setFields(user);

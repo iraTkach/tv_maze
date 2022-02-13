@@ -112,6 +112,7 @@ export const mergeUsersWithJson = async (users = [], usersJson = []) => {
     if (_usersJson) {
       return {
         userName: user.userName,
+        subscriptions: user.subscriptions,
         ..._usersJson,
       };
     }

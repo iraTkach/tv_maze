@@ -7,7 +7,7 @@ import { alertActions } from "./models/actions";
 import { connect } from "react-redux";
 import Login from "./pages/login";
 import { Result } from "antd";
-import Movies from './pages/movies/movies';
+import Movies from "./pages/movies/movies";
 
 const App = (props) => {
   useEffect(() => {
@@ -60,11 +60,23 @@ const App = (props) => {
           />
           {user?.isAdmin && (
             <Route
-              path="users"
+              path="/users"
               element={
                 <Users user={user} title="Users management" back={true} />
               }
-            />
+            >
+              <Route
+                path="/users/:id"
+                element={
+                  <Users
+                    user={user}
+                    title="Users management"
+                    back={true}
+                    showUser={true}
+                  />
+                }
+              />
+            </Route>
           )}
           <Route
             path="*"
