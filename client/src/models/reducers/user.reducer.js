@@ -3,15 +3,18 @@ import { userConstants } from "../constants";
 export function users(state = {}, action) {
   switch (action.type) {
     case userConstants.GETALL_REQUEST:
+    case userConstants.SUBSCRIPTION_REQUEST:
       return {
         loading: true,
       };
     case userConstants.GETALL_SUCCESS:
+    case userConstants.SUBSCRIPTION_SUCCESS:
       return {
         items: action.users,
         loading: false,
       };
     case userConstants.GETALL_FAILURE:
+    case userConstants.SUBSCRIPTION_FAILURE:
       return {
         error: action.error,
         loading: false,

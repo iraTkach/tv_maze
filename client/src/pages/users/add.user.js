@@ -26,8 +26,6 @@ export const AddUser = (props) => {
   const prmOpts = [
     { label: "View Subscriptions", value: "viewSub" },
     { label: "Create Subscriptions", value: "createSub" },
-    { label: "Delete Subscriptions", value: "deleteSub" },
-    { label: "Update Subscriptions", value: "updateSub" },
     { label: "View Movie", value: "viewMovie" },
     { label: "Create Movie", value: "createMovie" },
     { label: "Delete Movie", value: "deleteMovie" },

@@ -10,7 +10,8 @@ export const userService = {
   delete: _delete,
   addAdminUser,
   updateAdminUser,
-  userPermissions,
+  userPermissions,  
+  updateUserSubs
 };
 
 async function login(username, password) {
@@ -81,7 +82,7 @@ async function updateAdminUser(_id, user) {
  */
 async function userPermissions(_id) {
   const requestOptions = {
-    method: "POST",
+    method: "get",
     headers: { "Content-Type": "application/json" },
   };
 
@@ -97,6 +98,16 @@ async function getById(id) {
   };
 
   return fetch(`${api.users}/${id}`, requestOptions).then(handleResponse);
+}
+
+async function updateUserSubs(_id, movies) {
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(movies),
+  };
+
+  return fetch(`${api.users}/${_id}`, requestOptions).then(handleResponse);
 }
 
 async function register(user) {

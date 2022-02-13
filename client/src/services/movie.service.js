@@ -1,7 +1,7 @@
 import { api, authHeader } from "./api";
 
 export const movieService = {
-  getAll,
+  getAll, addMovie, updateMovie
 };
 
 async function getAll() {
@@ -24,6 +24,26 @@ function handleResponse(response) {
 
     return data;
   });
+}
+
+async function addMovie(movie) {
+  const requestOptions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(movie),
+  };
+
+  return fetch(`${api.movies}`, requestOptions).then(handleResponse);
+}
+
+async function updateMovie(_id, movie) {
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(movie),
+  };
+
+  return fetch(`${api.movies}/${_id}`, requestOptions).then(handleResponse);
 }
 
 

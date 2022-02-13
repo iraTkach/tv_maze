@@ -70,6 +70,7 @@ const MainLayout = (props) => {
                 onBack={metadata?.back ? () => window.history.back() : null}
                 title={metadata?.title}
                 extra={metadata?.buttons}
+                style={{marginBottom: 20}}
               />
             )}
             <Outlet/>

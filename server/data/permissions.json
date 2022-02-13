@@ -2,13 +2,21 @@
     {
         "_id": "6203c605188519d30d7d3291",
         "abilities": {
-            "viewSub": true
+            "viewSub": true,
+            "createSub": true,
+            "viewMovie": true,
+            "createMovie": true,
+            "deleteMovie": true,
+            "updateMovie": true
         }
     },
     {
         "_id": "6203c62e188519d30d7d3294",
         "abilities": {
-            "viewSub": true
+            "viewSub": true,
+            "createSub": true,
+            "viewMovie": true,
+            "createMovie": true
         }
     },
     {
@@ -27,7 +35,6 @@
         "_id": "62040e252c7a9309ddfd7944",
         "abilities": {
             "viewSub": true,
-            "deleteSub": true,
             "createMovie": true,
             "updateMovie": false
         }
@@ -37,7 +44,6 @@
         "abilities": {
             "viewSub": true,
             "createSub": false,
-            "updateSub": true,
             "viewMovie": true,
             "updateMovie": false
         }

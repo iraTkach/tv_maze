@@ -11,6 +11,7 @@ const userSchema = new Schema({
   signInAt: { type: Date, required: false },
   signOutAt: { type: Date, required: false },
   isAdmin: { type: Boolean, required: false },
+  subscriptions: { type: Array, required: false },
   //role: { type: String, required: true },
 });
 

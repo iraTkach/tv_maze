@@ -81,7 +81,8 @@ export const getUserJson = async (_id) => {
 export const getUserPermsJson = async (_id) => {
   return new Promise(async (resolve, reject) => {
     const json = await readJsonFile(memberAPI.permJson, resolve);
-    resolve(json.find((user) => user._id === _id));
+    const perms = json.find((user) => user._id === _id);
+    resolve(perms);
   });
 };
 
@@ -92,13 +93,13 @@ export const getUserPermsJson = async (_id) => {
  */
 export const getUserById = (id) => {
   return new Promise((resolve, reject) => {
-    Users.findById(id, (err, users) => {
+    Users.findById(id, (err, user) => {
       if (err) {
         console.error(err);
         return reject(err);
       }
 
-      resolve(users);
+      resolve(user);
     });
   });
 };
@@ -203,13 +204,9 @@ export const updateUser = async (id, data) => {
         delete userData.userName;
 
         if (user) {
-          const _user = await updateJson(
-            memberAPI.usersJson,
-            userData,
-            id,
-            usersJson
-          );
-          const _perms = await updateJson(
+          await updateJson(memberAPI.usersJson, userData, id, usersJson);
+
+          await updateJson(
             memberAPI.permJson,
             { abilities: data.abilities },
             id,
@@ -219,20 +216,52 @@ export const updateUser = async (id, data) => {
           const users = await getAllUsers();
           const userJson = await getUserJson(id.toString());
           const mergedUser = await mergeUserWithJson(user, userJson);
-          
-          resolve(users.map(user => {
-            if (user._id === id.toString()) {
-              return {
-                ...user,
-                ...mergedUser
-              }
-            }
 
-            return user;
-          }));
+          resolve(
+            users.map((user) => {
+              if (user._id === id.toString()) {
+                return {
+                  ...user,
+                  ...mergedUser,
+                };
+              }
+
+              return user;
+            })
+          );
         }
       }
     });
+  });
+};
+
+export const updateUserSubs = (id, subscriptions) => {
+  return new Promise((resolve, reject) => {
+    Users.findOneAndUpdate(
+      { _id: id },
+      { $set: { subscriptions } },
+      async (err, _user) => {
+        if (err) {
+          return reject(err);
+        }
+
+        if (_user) {
+          const userJson = await getUserJson(_user._id.toString());
+          const permission = await getUserPermsJson(_user._id.toString());
+          
+          resolve({
+            name: userJson.name,
+            username: _user.userName,
+            isSignedIn: true,
+            isAdmin: _user?.isAdmin,
+            permission,
+            subscriptions,
+          });
+        } else {
+          reject({ error: "Unable to update user subscriptions." });
+        }
+      }
+    );
   });
 };
 

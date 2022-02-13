@@ -13,6 +13,7 @@ export const userActions = {
   addAdminUser,
   updateAdminUser,
   userPermissions,
+  handleUserSubs
 };
 
 function login({ user }) {
@@ -102,6 +103,27 @@ function getAll() {
   }
 }
 
+function handleUserSubs(user, movies) {
+  return (dispatch) => {
+    dispatch(request(user));
+
+    userService.updateUserSubs(user.permission._id, movies).then(
+      (users) => dispatch(success(users)),
+      (error) => dispatch(failure(user, error.toString()))
+    );
+  };
+
+  function request() {
+    return { type: userConstants.SUBSCRIPTION_REQUEST };
+  }
+  function success(users) {
+    return { type: userConstants.SUBSCRIPTION_SUCCESS, users };
+  }
+  function failure(error) {
+    return { type: userConstants.SUBSCRIPTION_FAILURE, error };
+  }
+}
+
 function addAdminUser(user) {
   return (dispatch) => {
     dispatch(request(user));
@@ -164,6 +186,8 @@ function userPermissions(user, users) {
     return { type: userConstants.NEW_USER_FAILURE, error };
   }
 }
+
+
 // prefixed function name with underscore because delete is a reserved word in javascript
 function _delete(id) {
   return (dispatch) => {

@@ -9,7 +9,8 @@ import {
   addUserAdmin,
   updateUser,
   deleteUser,
-  getUserPermsJson
+  getUserPermsJson,
+  updateUserSubs
 } from "../controllers/users.controller";
 
 import { login, logout, register } from "../controllers/authenticate.controller";
@@ -44,9 +45,9 @@ router.post(
   async (req, res) => await apiWrapper(req, res, getUserJson, "post")
 );
 
-router.post(
+router.get(
   "/permissions/:id",
-  async (req, res) => await apiWrapper(req, res, getUserPermsJson, "post")
+  async (req, res) => await apiWrapper(req, res, getUserPermsJson, "get")
 );
 
 router.post(
@@ -62,6 +63,11 @@ router.post(
 router.put(
   "/:id",
   async (req, res) => await apiWrapper(req, res, updateUser, "put")
+);
+
+router.post(
+  "/:id",
+  async (req, res) => await apiWrapper(req, res, updateUserSubs, "put")
 );
 
 router.delete(

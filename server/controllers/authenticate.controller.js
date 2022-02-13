@@ -1,5 +1,5 @@
 import Users from "../models/user.model";
-import { getUserJson, getUsersJson } from "./users.controller";
+import { getUserJson, getUsersJson, getUserPermsJson } from "./users.controller";
 import { updateJson } from "./../services/utils";
 import { memberAPI } from './../services/config/user.config';
 
@@ -25,11 +25,15 @@ export const login = async (user) => {
 
         if (_user) {
           const userJson = await getUserJson(_user._id.toString());
+          const permission = await getUserPermsJson(_user._id.toString());
+          
           resolve({
             name: userJson.name,
             username: _user.userName,
             isSignedIn: true,
-            isAdmin: _user?.isAdmin
+            isAdmin: _user?.isAdmin,
+            permission,
+            subscriptions: _user.subscriptions
           });
         } else {
           reject({ error: "Invalid authentication credentials" });
