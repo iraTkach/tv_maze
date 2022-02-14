@@ -65,7 +65,7 @@ const App = (props) => {
             <Route
               path="/users"
               element={
-                <Users user={user} title="Users management" back={true} />
+                <Users user={user} title="Users management" back={false} />
               }
             >
               <Route
@@ -74,7 +74,7 @@ const App = (props) => {
                   <Users
                     user={user}
                     title="Users management"
-                    back={true}
+                    back={false}
                     showUser={true}
                   />
                 }
@@ -83,7 +83,7 @@ const App = (props) => {
           )}
           <Route
             path="/members"
-            element={<Members user={user} title="Members" back={true} />}
+            element={<Members user={user} title="Members" back={false} />}
           />
           <Route
             path="/members/:id/movies"
@@ -91,7 +91,7 @@ const App = (props) => {
               <Subscriptions
                 user={user}
                 title="Subscribed to Movies"
-                back={true}
+                back={false}
               />
             }
           />

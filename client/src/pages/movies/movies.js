@@ -17,6 +17,7 @@ import {
   Tag,
   Button,
   Tooltip,
+  Input,
 } from "antd";
 
 import {
@@ -31,14 +32,18 @@ import { sanitize } from "./../../utils/form";
 import styles from "./movies.module.css";
 import { memberActions } from "./../../models/actions/member.actions";
 
-const getButtons = (user, loading, onClick) => {
-  return (
-    user?.permission?.abilities?.createMovie && [
-      <Button loading={loading} key="new" type="primary" onClick={onClick}>
-        New
-      </Button>,
-    ]
-  );
+const { Search } = Input;
+
+const getButtons = (user, loading, onClick, onSearch) => {
+  const actions = [<Search disabled={loading} placeholder="Search" onSearch={onSearch} onChange={onSearch} style={{ width: 200 }} />];
+  return user?.permission?.abilities?.createMovie
+    ? [
+        ...actions,
+        <Button loading={loading} key="new" type="primary" onClick={onClick}>
+          New
+        </Button>,
+      ]
+    : actions;
 };
 
 const { Meta } = Card;
@@ -46,7 +51,6 @@ const { Meta } = Card;
 const Movies = (props) => {
   const {
     user,
-    users,
     movies,
     title,
     back,
@@ -61,12 +65,13 @@ const Movies = (props) => {
 
   const [abilities, setAbilities] = useState(user?.permission?.abilities || {});
   const [selectedMovies, setSelectedMovies] = useState({});
+  const [filteredMovies, setFilteredMovies] = useState(movies?.items);
 
   useEffect(() => {
     updateMeta(
       title,
       back,
-      getButtons(user, movies?.loading, () => handleAddNewMovie("Add Movie"))
+      getButtons(user, movies?.loading, () => handleAddNewMovie("Add Movie"), onSearch)
     );
 
     setAbilities(user?.permission?.abilities || {});
@@ -75,10 +80,19 @@ const Movies = (props) => {
     setSelectedMovies({
       ...subscriptions.reduce((a, v) => ({ ...a, [v]: true }), {}),
     });
+
+    setFilteredMovies(movies?.items);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, movies, back, title, updateMeta]);
 
   const { viewMovie, viewSub, createSub } = abilities;
+
+  const onSearch = (e) => {
+    const value = e?.target?.value || e;
+    const regExp = new RegExp(value, 'ig')
+    setFilteredMovies(movies?.items?.filter(movie => movie.name.match(regExp)));
+  }
 
   useEffect(() => {
     !!viewMovie && getAll();
@@ -154,9 +168,9 @@ const Movies = (props) => {
 
   return (
     <Spin spinning={loading}>
-      {movies?.items?.length ? (
+      {filteredMovies?.length ? (
         <Row className={styles.movies} gutter={[20, 20]}>
-          {movies?.items?.map((movie, idx) => (
+          {filteredMovies?.map((movie, idx) => (
             <Col key={idx} {...colProps}>
               <Card
                 hoverable

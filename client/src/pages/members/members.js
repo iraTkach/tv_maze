@@ -11,7 +11,7 @@ import {
   EditOutlined,
   TableOutlined,
   IdcardOutlined,
-  VideoCameraOutlined
+  VideoCameraOutlined,
 } from "@ant-design/icons";
 
 import styles from "./member.module.css";
@@ -39,7 +39,7 @@ const Members = (props) => {
     updateMeta,
     addMember,
     updateMember,
-    deleteMember
+    deleteMember,
   } = props;
 
   useEffect(() => {
@@ -69,10 +69,6 @@ const Members = (props) => {
     setIsEdit(true);
     setFields(member);
   };
-
-  const handleSubscriptions = member => {
-    window.location.replace(`/members/${member._id}/movies`)
-  }
 
   const dataSource = members?.items?.map((member, idx) => ({
     key: idx,
@@ -121,15 +117,13 @@ const Members = (props) => {
                 handleEditMember("Edit Member", data);
               }}
             />
-            <VideoCameraOutlined
-              onClick={() => {
-                handleSubscriptions(data);
-              }}
-            />
+            <Link to={`/members/${data._id}/movies`}>
+              <VideoCameraOutlined />
+            </Link>
             <Popconfirm
               title={`Are you sure to delete this member: ${data.name}?`}
               onConfirm={() => {
-                deleteMember(data._id)
+                deleteMember(data._id);
               }}
               okText="Yes"
               cancelText="No"
@@ -187,42 +181,51 @@ const Members = (props) => {
         <Row className={styles.members} gutter={[20, 20]}>
           {members?.items?.map((member, idx) => (
             <Col key={idx} {...colProps}>
-              <Link
-                to={`/members/${member._id}`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleEditMember("Edit Member", member);
-                }}
+              <Card
+                hoverable
+                className={styles.card}
+                cover={
+                  <div className={styles.imgWrapper}>
+                    <Avatar src={`https://joeschmoe.io/api/v1/random?${idx}`} />
+                  </div>
+                }
+                actions={[
+                  <EditOutlined
+                    onClick={() => {
+                      handleEditMember("Edit Member", member);
+                    }}
+                  />,
+                  <Link to={`/members/${member._id}/movies`}>
+                    <VideoCameraOutlined />
+                  </Link>,
+                  <Popconfirm
+                    title={`Are you sure to delete this member: ${member.name}?`}
+                    onConfirm={() => {
+                      deleteMember(member._id);
+                    }}
+                    okText="Yes"
+                    cancelText="No"
+                  >
+                    <DeleteOutlined />
+                  </Popconfirm>,
+                ]}
               >
-                <Card
-                  hoverable
-                  className={styles.card}
-                  cover={
-                    <div className={styles.imgWrapper}>
-                      <Avatar
-                        src={`https://joeschmoe.io/api/v1/random?${idx}`}
-                      />
+                <Meta
+                  title={member.name}
+                  description={
+                    <div className={styles.desc}>
+                      <div>
+                        <strong>Email: </strong>
+                        <span>{member.email}</span>
+                      </div>
+                      <div>
+                        <strong>City : </strong>
+                        <span>{member.city}</span>
+                      </div>
                     </div>
                   }
-                  actions={[]}
-                >
-                  <Meta
-                    title={member.name}
-                    description={
-                      <div className={styles.desc}>
-                        <div>
-                          <strong>Email: </strong>
-                          <span>{member.email}</span>
-                        </div>
-                        <div>
-                          <strong>City : </strong>
-                          <span>{member.city}</span>
-                        </div>
-                      </div>
-                    }
-                  />
-                </Card>
-              </Link>
+                />
+              </Card>
             </Col>
           ))}
         </Row>

@@ -1,19 +1,9 @@
 import React, { useEffect } from "react";
-import { Modal, Form, Input, Divider, Switch, Row, Col } from "antd";
+import { Modal, Form, Input } from "antd";
 import {
   UserOutlined,
-  LockOutlined,
   ContactsOutlined,
 } from "@ant-design/icons";
-
-const permissionProps = {
-  xs: 24,
-  sm: 12,
-  md: 12,
-  lg: 8,
-  xl: 8,
-  xxl: 8,
-};
 
 export const AddMember = (props) => {
   const [form] = Form.useForm();
