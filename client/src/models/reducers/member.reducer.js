@@ -41,6 +41,7 @@ export function members(state = {}, action) {
       // add 'deleting:true' property to member being deleted
       return {
         ...state,
+        loading: true,
         items: state.items.map((member) =>
           member.id === action.id ? { ...member, deleting: true } : member
         ),
@@ -48,7 +49,8 @@ export function members(state = {}, action) {
     case memberConstants.DELETE_SUCCESS:
       // remove deleted member from state
       return {
-        items: state.items.filter((member) => member.id !== action.id),
+        loading: false,
+        items: state.items.filter((member) => member._id !== action.id),
       };
     case memberConstants.DELETE_FAILURE:
       // remove 'deleting:true' property and add 'deleteError:[error]' property to member

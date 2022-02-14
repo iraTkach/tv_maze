@@ -138,7 +138,7 @@ function updateMember(_id, member) {
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
-function _delete(id) {
+function _delete(id, members) {
   return (dispatch) => {
     dispatch(request(id));
 
@@ -151,8 +151,8 @@ function _delete(id) {
   function request(id) {
     return { type: memberConstants.DELETE_REQUEST, id };
   }
-  function success(id) {
-    return { type: memberConstants.DELETE_SUCCESS, id };
+  function success(id, members) {
+    return { type: memberConstants.DELETE_SUCCESS, id, members };
   }
   function failure(id, error) {
     return { type: memberConstants.DELETE_FAILURE, id, error };

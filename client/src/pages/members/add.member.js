@@ -75,16 +75,17 @@ export const AddMember = (props) => {
           placeholder="Enter Email"
           rules={[
             {
+              type: "email",
               required: true,
               message: "Please input Email",
             },
           ]}
         >
-          <Input
+          <Input           
             autoComplete="email"
             prefix={<UserOutlined className="site-form-item-icon" />}
           />
-        </Form.Item> 
+        </Form.Item>
         <Form.Item
           name="city"
           label="City"
@@ -100,7 +101,7 @@ export const AddMember = (props) => {
             autoComplete="city"
             prefix={<UserOutlined className="site-form-item-icon" />}
           />
-        </Form.Item>             
+        </Form.Item>
       </Form>
     </Modal>
   );

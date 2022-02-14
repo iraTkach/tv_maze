@@ -39,6 +39,7 @@ const Members = (props) => {
     updateMeta,
     addMember,
     updateMember,
+    deleteMember
   } = props;
 
   useEffect(() => {
@@ -126,9 +127,9 @@ const Members = (props) => {
               }}
             />
             <Popconfirm
-              title={`Are you sure to delete this member: ${data.memberName}?`}
+              title={`Are you sure to delete this member: ${data.name}?`}
               onConfirm={() => {
-                alert("Delete");
+                deleteMember(data._id)
               }}
               okText="Yes"
               cancelText="No"
@@ -257,6 +258,7 @@ const memberCreators = {
   updateMeta: mainActions.updateMeta,
   addMember: memberActions.addMember,
   updateMember: memberActions.updateMember,
+  deleteMember: memberActions.delete,
 };
 
 export default connect(mapState, memberCreators)(Members);

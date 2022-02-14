@@ -2,7 +2,6 @@ import { api, authHeader } from "./api";
 import { message } from "antd";
 
 export const memberService = {
-  
   getAll,
   getById,
   update,
@@ -11,7 +10,7 @@ export const memberService = {
   getMember,
   updateMember,
   updateUserSubs,
-  getMovieSubs
+  getMovieSubs,
 };
 
 async function getAll() {
@@ -66,16 +65,18 @@ async function updateUserSubs(_id, movies) {
 async function getMovieSubs(_id) {
   const requestOptions = {
     method: "GET",
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json" },
   };
 
-  return fetch(`${api.movies}/${_id}/members`, requestOptions).then(handleResponse);
+  return fetch(`${api.movies}/${_id}/members`, requestOptions).then(
+    handleResponse
+  );
 }
 
 async function getMember(_id) {
   const requestOptions = {
     method: "GET",
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json" },
   };
 
   return fetch(`${api.members}/${_id}`, requestOptions).then(handleResponse);
@@ -102,11 +103,11 @@ async function _delete(id) {
     headers: authHeader(),
   };
 
-  const response = await fetch(`${api.apiUrl}/members/${id}`, requestOptions);
-  return handleResponse(response);
+  const response = await fetch(`${api.members}/${id}`, requestOptions);
+  return handleResponse(response, false);
 }
 
-function handleResponse(response) {
+function handleResponse(response, parse = true) {
   return response.text().then((text) => {
     if (!response.ok) {
       const error = response.statusText;
@@ -114,7 +115,11 @@ function handleResponse(response) {
       return Promise.reject(error);
     }
 
-    const data = text && JSON.parse(text);
-    return data;
+    if (parse) {
+      const data = text && JSON.parse(text);
+      return data;
+    } else {
+      return text;
+    }
   });
 }
