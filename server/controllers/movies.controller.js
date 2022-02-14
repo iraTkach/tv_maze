@@ -1,5 +1,7 @@
+import { Types } from "mongoose";
 import Movie from "../models/movie.model";
-import { getAllUsers } from './users.controller';
+import Member from "../models/member.model";
+import { getMovieSubscriptions } from "./subscriptions.controller";
 
 const assert = require("assert");
 
@@ -49,7 +51,7 @@ export const getAllMovies = async () => {
  * @async
  * @param {*} id
  */
- export const getMovieById = (id) => {
+export const getMovieById = (id) => {
   return new Promise((resolve, reject) => {
     Movie.findById(id, (err, movie) => {
       if (err) {
@@ -66,29 +68,33 @@ export const getAllMovies = async () => {
  * @async
  * @param {*} id
  */
- export const getMovieSubs = (id) => {
+export const getMovieSubs = (id) => {
   return new Promise((resolve, reject) => {
     Movie.findById(id, async (err, movie) => {
       if (err) {
         reject(err);
       } else {
-        const users = await getAllUsers();
-        movie.subscribers = users.map(user => {
-          if (user?.subscriptions?.includes(id)) {
-            return {
-              _id: user._id,
-              userName: user.userName,          
+        const subs = await getMovieSubscriptions(movie._id.toString());
+        const ids = subs.map((s) => Types.ObjectId(s.memberId));
+
+        Member.find(
+          {
+            _id: {
+              $in: [...ids],
+            },
+          },
+          function (err, members) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(members);
             }
           }
-        }).filter(user => user);
-
-        resolve(movie);
+        );
       }
     });
   });
 };
-
-
 
 /**
  * @export
@@ -120,12 +126,11 @@ export const updateMovie = (id, movieToUpdate) => {
       if (err) {
         reject(err);
       } else {
-        console.info("Updated successfully", movieToUpdate)
+        console.info("Updated successfully", movieToUpdate);
         resolve(getAllMovies());
       }
     });
   });
-
 };
 
 /**

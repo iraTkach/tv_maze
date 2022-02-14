@@ -14,7 +14,6 @@ export const userActions = {
   updateAdminUser,
   userPermissions,
   handleUserSubs,
-  getMovieSubs,
 };
 
 function login({ user }) {
@@ -122,27 +121,6 @@ function handleUserSubs(user, movies) {
   }
   function failure(error) {
     return { type: userConstants.SUBSCRIPTION_FAILURE, error };
-  }
-}
-
-function getMovieSubs(movie) {
-  return (dispatch) => {
-    dispatch(request(movie));
-
-    userService.getMovieSubs(movie._id).then(
-      (movie) => dispatch(success(movie)),
-      (error) => dispatch(failure(movie, error.toString()))
-    );
-  };
-
-  function request() {
-    return { type: userConstants.MOVIE_SUBSCRIPTION_REQUEST };
-  }
-  function success(movie) {
-    return { type: userConstants.MOVIE_SUBSCRIPTION_SUCCESS, movie };
-  }
-  function failure(error) {
-    return { type: userConstants.MOVIE_SUBSCRIPTION_FAILURE, error };
   }
 }
 

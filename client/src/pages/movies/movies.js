@@ -29,6 +29,7 @@ import {
 
 import { sanitize } from "./../../utils/form";
 import styles from "./movies.module.css";
+import { memberActions } from "./../../models/actions/member.actions";
 
 const getButtons = (user, loading, onClick) => {
   return (
@@ -49,6 +50,7 @@ const Movies = (props) => {
     movies,
     title,
     back,
+    members,
     updateMeta,
     getAll,
     updateMovie,
@@ -238,17 +240,19 @@ const Movies = (props) => {
           </Button>,
         ]}
       >
-        <Spin spinning={users?.loading}>
-          {users?.movie?.subscribers?.map((_user, idx) => (
-            <div className={styles.subscriberWrapper} key={idx}>
-              <Avatar src="https://joeschmoe.io/api/v1/random" />
-              {user.isAdmin ? (
-                <Link to={`/users/${_user._id}`}>{_user.userName}</Link>
-              ) : (
-                <span>{_user.userName}</span>
-              )}
-            </div>
-          ))}
+        <Spin spinning={members?.loading}>
+          {members?.subscribers?.length
+            ? members?.subscribers?.map((member, idx) => (
+                <div className={styles.subscriberWrapper} key={idx}>
+                  <Avatar src={`https://joeschmoe.io/api/v1/random?${idx}`} />
+                  {user.isAdmin ? (
+                    <Link to={`/members/${member._id}`}>{member.name}</Link>
+                  ) : (
+                    <span>{member.name}</span>
+                  )}
+                </div>
+              ))
+            : "No movie subscribers"}
         </Spin>
       </Modal>
       {isMovieForm && (
@@ -268,8 +272,8 @@ const Movies = (props) => {
 };
 
 function mapState(state) {
-  const { movies, users } = state;
-  return { movies, users };
+  const { movies, users, members } = state;
+  return { movies, users, members };
 }
 
 const moviesCreators = {
@@ -277,7 +281,7 @@ const moviesCreators = {
   updateMeta: mainActions.updateMeta,
   addMovie: movieActions.addMovie,
   updateMovie: movieActions.updateMovie,
-  getMovieSubs: userActions.getMovieSubs,
+  getMovieSubs: memberActions.getMovieSubs,
   handleUserSubs: userActions.handleUserSubs,
 };
 

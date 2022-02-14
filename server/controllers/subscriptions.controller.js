@@ -6,10 +6,26 @@ import Member from "../models/member.model";
  * @export
  * @param {string} id
  */
-export const getUserSubscriptions = async (id) => {
+ export const getUserSubscriptions = async (id) => {
   return new Promise((resolve, reject) => {
     Subscription.find(
       { memberId: new Types.ObjectId(id) },
+      async (err, subscriptions) => {
+        if (err) return reject(err);
+        resolve(subscriptions);
+      }
+    );
+  });
+};
+
+/**
+ * @export
+ * @param {string} id
+ */
+ export const getMovieSubscriptions = async (id) => {
+  return new Promise((resolve, reject) => {
+    Subscription.find(
+      { movieId: new Types.ObjectId(id) },
       async (err, subscriptions) => {
         if (err) return reject(err);
         resolve(subscriptions);
@@ -49,8 +65,6 @@ export const addUserSubscription = (id, subscription) => {
             subscribedAt: subscription.subscribedAt,
           },
         ]
-
-        console.log(res);
 
         resolve(res);
       } else {

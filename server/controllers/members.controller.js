@@ -1,4 +1,4 @@
-import Members from "../models/member.model";
+import Member from "../models/member.model";
 import { getAll } from "../services/axios";
 import { memberAPI } from "../services/config/user.config";
 
@@ -24,11 +24,11 @@ async function _getAll() {
  */
 export const setAllMembers = async () => {
   const members = await getAllMembers();
-  !members.length && 
+  !members.length &&
     _getAll()
       .then((data) => {
         console.log(`>>> Massive insert of: ${data.length} members`);
-        Members.collection.insertMany(
+        Member.collection.insertMany(
           data.map((item) => ({
             name: item?.name,
             email: item?.email,
@@ -49,7 +49,7 @@ export const setAllMembers = async () => {
  */
 export const getAllMembers = async () => {
   return new Promise((resolve, reject) => {
-    Members.find({}, async (err, members) => {
+    Member.find({}, async (err, members) => {
       if (err) reject(err);
       resolve(members);
     });
@@ -59,11 +59,11 @@ export const getAllMembers = async () => {
  * @export
  * @async
  * @param {*} id
- * 
+ *
  */
- export const getMemberById = (id) => {
+export const getMemberById = (id) => {
   return new Promise((resolve, reject) => {
-    Members.findById(id, (err, members) => {
+    Member.findById(id, (err, members) => {
       if (err) {
         reject(err);
       } else {
@@ -75,57 +75,63 @@ export const getAllMembers = async () => {
 
 /**
  * @export
- * @async 
+ * @async
  * @param {*} vewMember
  */
 export const addMember = async (newMember) => {
-  // const members = await getAllMembers();
-  // const exists = members.find(member => member.name === newUser.name);
-  
-  // if (!exists) {
-  //   return console.warn("User doesn't exist");
-  // }
-  // await updateMember(newMember.id, {...newMember, name: newMember.name})
-  const member = new Members(newMember); 
-  await member.save((err) => {
-    if (err) {
-      console.warn(err);
-    } else {
-      console.info("Added successfully");
-    }
+  return new Promise(async (resolve, reject) => {
+    const member = new Member(newMember);
+    await member.save((err) => {
+      if (err) {
+        console.warn(err);
+        reject(err);
+      } else {
+        console.info("Added successfully");
+      }
+    });
+
+    const res = [
+      ...(await getAllMembers()),
+      {
+        _id: member._id,
+        ...newMember,
+      },
+    ];
+
+    resolve(res);
   });
-}
+};
 
 /**
  * @export
  * @async
  * @param {*} id
  */
-  export const updateMember = (id, memberToUpdate) => {
-    return new Promise((resolve, reject) => {
-      Members.findByIdAndUpdate(id, memberToUpdate, (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve("Updated successfully");
-        }
-      });
+export const updateMember = (id, memberToUpdate) => {
+  return new Promise((resolve, reject) => {
+    Member.findByIdAndUpdate(id, memberToUpdate, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve("Updated successfully");
+      }
     });
-  };
+  });
+};
 
-  /**
+/**
  * @export
  * @async
  * @param {*} id
  */
-  export const deleteMember = (id) => {
-    return new Promise((resolve, reject) => {
-      Members.findByIdAndDelete(id, (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve("Deleted successfully");
-        }
-      });
+export const deleteMember = (id) => {
+  return new Promise((resolve, reject) => {
+    Member.findByIdAndDelete(id, (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve("Deleted successfully");
+      }
     });
-  };
+  });
+};

@@ -6,6 +6,7 @@ export function members(state = {}, action) {
     case memberConstants.GET_MEMBER_REQUEST:
     case memberConstants.NEW_MEMBER_REQUEST:
     case memberConstants.UPDATE_MEMBER_REQUEST:
+    case memberConstants.MOVIE_SUBSCRIPTION_REQUEST:
       return {
         loading: true,
       };
@@ -19,17 +20,19 @@ export function members(state = {}, action) {
         member: action.member,
         loading: false,
       };
-    case memberConstants.GETALL_FAILURE:
-      return {
-        error: action.error,
-        loading: false,
-      };
     case memberConstants.NEW_MEMBER_SUCCESS:
       return {
         items: action.members,
         loading: false,
       };
+    case memberConstants.MOVIE_SUBSCRIPTION_SUCCESS:
+      return {
+        subscribers: action.subscribers,
+        loading: false,
+      };
+    case memberConstants.GETALL_FAILURE:
     case memberConstants.NEW_MEMBER_FAILURE:
+    case memberConstants.MOVIE_SUBSCRIPTION_FAILURE:
       return {
         error: action.error,
         loading: false,

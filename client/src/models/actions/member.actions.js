@@ -87,8 +87,8 @@ function getMovieSubs(movie) {
   function request() {
     return { type: memberConstants.MOVIE_SUBSCRIPTION_REQUEST };
   }
-  function success(movie) {
-    return { type: memberConstants.MOVIE_SUBSCRIPTION_SUCCESS, movie };
+  function success(subscribers) {
+    return { type: memberConstants.MOVIE_SUBSCRIPTION_SUCCESS, subscribers };
   }
   function failure(error) {
     return { type: memberConstants.MOVIE_SUBSCRIPTION_FAILURE, error };

@@ -19,7 +19,7 @@ router.get(
 );
 
 router.get(
-  "/:id/users",
+  "/:id/members",
   async (req, res) => await apiWrapper(req, res, getMovieSubs)
 );
 
