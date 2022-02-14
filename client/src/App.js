@@ -7,7 +7,9 @@ import { alertActions } from "./models/actions";
 import { connect } from "react-redux";
 import Login from "./pages/login";
 import { Result } from "antd";
-import Movies from "./pages/movies/movies";
+import Movies from "./pages/movies";
+import Members from "./pages/members";
+import Subscriptions from "./pages/members/subscriptions";
 
 const App = (props) => {
   useEffect(() => {
@@ -58,6 +60,7 @@ const App = (props) => {
               />
             }
           />
+
           {user?.isAdmin && (
             <Route
               path="/users"
@@ -78,6 +81,20 @@ const App = (props) => {
               />
             </Route>
           )}
+          <Route
+            path="/members"
+            element={<Members user={user} title="Members" back={true} />}
+          />
+          <Route
+            path="/members/:id/movies"
+            element={
+              <Subscriptions
+                user={user}
+                title="Subscribed to Movies"
+                back={true}
+              />
+            }
+          />
           <Route
             path="*"
             element={

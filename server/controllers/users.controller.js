@@ -1,6 +1,4 @@
 import Users from "../models/user.model";
-import { getAll } from "../services/axios";
-import { userAPI } from "../services/config/user.config";
 import { memberAPI } from "./../services/config/user.config";
 import {
   handleJson,
@@ -11,20 +9,6 @@ import {
 } from "./../services/utils";
 
 const assert = require("assert");
-
-/**
- * @async
- * @private
- */
-async function _getAll() {
-  const response = await getAll(userAPI.baseUrl);
-
-  if (response.status === 200) {
-    return response.data;
-  }
-
-  console.error("Error!");
-}
 
 /**
  * @export

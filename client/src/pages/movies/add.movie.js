@@ -187,7 +187,7 @@ export const AddMovie = (props) => {
               rules={[
                 {
                   required: true,
-                  message: "Please input Film Premiered Date",
+                  message: "Please input Movie Premiered Date",
                 },
               ]}
             >

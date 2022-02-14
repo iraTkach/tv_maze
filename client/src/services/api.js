@@ -5,6 +5,8 @@ const SERVER = {
 export const api = {
   users: `${SERVER.url}/api/users`,
   movies: `${SERVER.url}/api/movies`,
+  members: `${SERVER.url}/api/members`,
+  subscriptions: `${SERVER.url}/api/subscriptions`,
 };
 
 /**

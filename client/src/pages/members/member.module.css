@@ -1,0 +1,19 @@
+.actions {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.actions > span:hover {
+  color: lightseagreen;
+}
+
+.members {
+}
+
+.members .imgWrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 0;
+}

@@ -157,6 +157,7 @@ const Movies = (props) => {
           {movies?.items?.map((movie, idx) => (
             <Col key={idx} {...colProps}>
               <Card
+                hoverable
                 className={styles.card}
                 cover={
                   <div className={styles.imgWrapper}>
